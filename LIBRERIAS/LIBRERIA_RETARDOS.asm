@@ -1,0 +1,59 @@
+;			MOVLW		.			;VAR2
+;			MOVWF		0X61
+;			MOVLW		.			;VAR1
+;			MOVWF		0X62
+;			CALL		ST2V
+;			RETURN
+;;---------------------------------------------------------
+;			MOVLW		.			;VAR1
+;			MOVWF		0X64
+;			MOVLW		.			;VAR2
+;			MOVWF		0X65		
+;			MOVLW		.			;VAR3
+;			MOVWF		0X66
+;			CALL		ST3V
+
+;SUBT25MS:		SUBT3V		.3,.47,.25   ;RETARDO DE 25mS PARA EL USO DE LA FUNCION ANTIREBOTES	
+
+;--------------------RUTINA DE TIEMPO 1 VAR---------------
+
+ST1V:			NOP
+			NOP
+			NOP 
+			NOP
+			DECFSZ		0X60,F
+			GOTO		ST1V
+			RETURN
+
+			
+;SUBRUTINA DE TIEMPO DE 2 VARIABLES
+ST2V:			MOVF		0X62,W
+			MOVWF		0X63
+DECRE2V:		NOP
+			NOP
+			NOP
+			NOP
+			DECFSZ		0X63,F
+			GOTO		DECRE2V
+			DECFSZ		0X61,F
+			GOTO		ST2V
+			RETURN
+
+			
+;SUBRUTINA DE TIEMPO DE 3 VARIABLES
+ST3V:			MOVF		0X66,W
+			MOVWF		0X67
+RECARGA3V:		MOVF		0X65,W
+			MOVWF		0X68
+DECRE3V:		NOP
+			NOP
+			NOP
+			NOP
+			DECFSZ		0X68,F
+			GOTO		DECRE3V
+			DECFSZ		0X67,F
+			GOTO        	RECARGA3V
+			DECFSZ		0X64,F
+			GOTO 		ST3V
+			RETURN
+

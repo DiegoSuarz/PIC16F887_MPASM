@@ -1,0 +1,63 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Mon Apr 26 21:52:36 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000118
+  .config_2007_PWM_SOFT.O       code   0x002007    program   0x000002
+  .config_2008_PWM_SOFT.O       code   0x002008    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00008b      
+                            0x002007    0x002008      
+            142 out of 8455 program addresses used, program memory utilization is 1%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+            CONFIGURACION   0x000001    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\PLANTILLA.ASM
+                  DECRE2V   0x000074    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+                  DECRE3V   0x000081    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+              DESCRIPCION   0x000000    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                   INICIO   0x00001c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                    PWM20   0x00002f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                     PWM5   0x00001d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                    PWM50   0x00003e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                    PWM80   0x00004c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                RECARGA3V   0x00007f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+                     ST1V   0x00006b    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+                     ST2V   0x000072    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+                     ST3V   0x00007d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+                    T25MS   0x000063    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                 TEST_RE0   0x00005d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+              DESCRIPCION   0x000000    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+            CONFIGURACION   0x000001    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\PLANTILLA.ASM
+                   INICIO   0x00001c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                     PWM5   0x00001d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                    PWM20   0x00002f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                    PWM50   0x00003e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                    PWM80   0x00004c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                 TEST_RE0   0x00005d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                    T25MS   0x000063    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\18_PWM_SOFTWARE\PWM_SOFT.asm
+                     ST1V   0x00006b    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+                     ST2V   0x000072    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+                  DECRE2V   0x000074    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+                     ST3V   0x00007d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+                RECARGA3V   0x00007f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+                  DECRE3V   0x000081    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm
+
+

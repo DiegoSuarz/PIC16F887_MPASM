@@ -1,0 +1,1038 @@
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;DESCRIPCION:
+                      00002 ;DIBUJA UNA CARITA FELIZ EN LA MATRIZ
+                      00003 ;PORTC=RENGLONES, ACTIVAS LOS DATOS CON 0s
+                      00004 ;PORTB=DATOS
+                      00005 ;---------------------------MACROS-----------------------------------
+                      00006 ;CARGA_ANIMA                    MACRO                   ETIQUETA,RETARDOS,NUM_ANIM      ;MACRO PARA GENE
+                            RAR ANIMACIONES Y RETARDO
+                      00007 ;                                       MOVLW                   RETARDOS                                
+                                    ;CUANTAS REPETICIONES HACER PARA GENERAR UN RETARDO PARA 1/60 DE SEG
+                      00008 ;                                       MOVWF                   REPETICIONES                            
+                            ;CARGAR EN NUMERO DE REPETICIONES PARA GENERAR UN CAMBIO.
+                      00009 ;ETIQUETA:                      MOVLW                   8*NUM_ANIM                                      
+                            ;MPLAB CARGA 8 * NUM_ANIM QUE SE REQUIERA, NUM_ANIM=0,1,2,3
+                      00010 ;                                       MOVWF                   NUMERO_ANIMACION                        
+                            ;EL NUMERO DE ANIMACION GENERADO DE ACUERDO A LA TABLA
+                      00011 ;                                       CALL                    ANIMACIONES                             
+                                    ;LLAMADO A SUBRUTINA
+                      00012 ;                                       DECFSZ                  REPETICIONES,F                          
+                            ;GENERAR RETARDO
+                      00013 ;                                       GOTO                    ETIQUETA
+                      00014 ;                                       ENDM
+                      00015 ;---------------------------DEFINE-----------------------------------
+                      00016 
+                      00017 ;----------------------------EQU--------------------------------------
+  00000021            00018 NUMERO_ANIMACION        EQU     0X21
+  00000022            00019 CONTEO_RENGLONES        EQU 0X22
+  00000023            00020 REPETICIONES            EQU 0X23
+                      00021 
+                      00022 ;---------------------------HEADER--------------------------------------
+                      00023                                         
+                      00024                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS_MACROS.ASM> ;MACRO DE RETARDO
+                      00001 ;---------RETARDO 1 VARIABLE-----------------
+                      00002 
+                      00003 RETARDO_1V      MACRO           VAR1
+                      00004                 MOVLW           VAR1
+                      00005                 MOVWF           0X60
+                      00006                 CALL            ST1V
+                      00007                 ENDM
+                      00008 
+                      00009 ;---------RETARDO 2 VARIABLES-----------------
+                      00010 RETARDO_2V      MACRO           VAR1,VAR2
+                      00011                 MOVLW           VAR1
+                      00012                 MOVWF           0X61
+                      00013                 MOVLW           VAR2
+                      00014                 MOVWF           0X62
+                      00015                 CALL            ST2V
+                      00016                 ENDM
+                      00017 
+                      00018 ;---------RETARDO 3 VARIABLES-----------------
+                      00019 RETARDO_3V      MACRO           VAR1,VAR2,VAR3
+                      00020                 MOVLW           VAR1                            ;VAR1
+                      00021                 MOVWF           0X64
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00022                 MOVLW           VAR2                            ;VAR2
+                      00023                 MOVWF           0X65                    
+                      00024                 MOVLW           VAR3                            ;VAR3
+                      00025                 MOVWF           VAR3
+                      00026                 CALL            ST3V
+                      00027                 ENDM
+                      00028 ;---------------------------------------------------
+                      00025                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\PLANTILLA.ASM>     ;CONFIGURACION BASICA
+                      00001 ;PLANTILLA PARA CONFIGURACION BASICA
+                      00002 
+                      00003 ;DIRECTIVAS
+                      00004                         
+                      00005                          PROCESSOR      16F887
+2007   23E4           00006                         __CONFIG        0X2007,23E4
+2008   3FFF           00007                         __CONFIG        0X2008,3FFF
+                      00008                         INCLUDE         <P16F887.INC>
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F887 processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00809         LIST
+                      00009 
+0000                  00010                         ORG                     0X0000                  ;EMPEZAR EN LA DIRECCION 0 DE LA
+                             MEMORIA DE PROGRAMA
+0000   2801           00011                         GOTO            CONFIGURACION
+                      00012 ;ETIQUETAS | NEMONICOS | OPERANDOS              | COMENTARIOS   
+                      00013 
+0001                  00014 CONFIGURACION   
+                      00015                 
+0001   1683           00016                 BSF                     STATUS,RP0
+0002   1703           00017                         BSF                     STATUS,RP1              ;ACCEDIENDO AL BANCO 3
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0003   0188           00018                         CLRF            ANSEL
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0004   0189           00019                         CLRF            ANSELH                  ;TODOS LOS PINES DIGITALES
+                      00020                         
+0005   1303           00021                         BCF                     STATUS,RP1
+0006   1683           00022                         BSF                     STATUS,RP0              ;ACCEDIENDO AL BANCO 1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0007   0185           00023                         CLRF            TRISA                   ;PUERTO A COMO ENTRADA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0008   0186           00024                         CLRF            TRISB                   ;PUERTO B COMO SALIDA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0009   0187           00025                         CLRF            TRISC                   ;PUERTO C COMO ENTRADA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000A   0188           00026                         CLRF            TRISD                   ;PUERTO D COMO SALIDA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+000B   0189           00027                         CLRF            TRISE                   ;PUERTO E COMO ENTRADA
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00028                         
+                      00029 
+000C   1283           00030                         BCF                     STATUS,RP0              
+000D   1303           00031                         BCF                     STATUS,RP1              ;ACCEDIENDO AL BANCO 0
+000E   0185           00032                         CLRF            PORTA                   ;LIMPIAR EL PUERTO A
+000F   0186           00033                         CLRF            PORTB                   ;LIMPIAR EL PUERTO B
+0010   0187           00034                         CLRF            PORTC                   ;LIMPIAR EL PUERTO C
+0011   0188           00035                         CLRF            PORTD                   ;LIMPIAR EL PUERTO D
+0012   0189           00036                         CLRF            PORTE                   ;LIMPIAR EL PUERTO E
+                      00037                 
+0013   1303           00038                         BCF                     STATUS,RP1
+0014   1683           00039                         BSF                     STATUS,RP0              ;ACCEDIENDO AL BANCO 1
+                      00040                         
+                      00026 
+                      00027 CARGA_ANIMA                     MACRO                   ETIQUETA,RETARDOS,NUM_ANIM      ;MACRO PARA GENE
+                            RAR ANIMACIONES Y RETARDO
+                      00028                                 
+                      00029                                         MOVLW                   RETARDOS                                
+                                    ;CUANTAS REPETICIONES HACER PARA GENERAR UN RETARDO PARA 1/60 DE SEG
+                      00030                                         MOVWF                   REPETICIONES                            
+                            ;CARGAR EN NUMERO DE REPETICIONES PARA GENERAR UN CAMBIO.
+                      00031 ETIQUETA:                       MOVLW                   8*NUM_ANIM                                      
+                            ;MPLAB CARGA 8 * NUM_ANIM QUE SE REQUIERA, NUM_ANIM=0,1,2,3
+                      00032                                         MOVWF                   NUMERO_ANIMACION                        
+                            ;EL NUMERO DE ANIMACION GENERADO DE ACUERDO A LA TABLA
+                      00033                                         CALL                    ANIMACIONES                             
+                                    ;LLAMADO A SUBRUTINA
+                      00034                                         DECFSZ                  REPETICIONES,F                          
+                            ;GENERAR RETARDO
+                      00035                                         GOTO                    ETIQUETA
+                      00036                                         ENDM
+                      00037 
+                      00038                         ;NOS DEJA EN EL BANCO 1 
+                      00039 
+                      00040 ;-----------------------CODIGO PRINCIPAL------------------------------
+                      00041 ;ETIQUETAS                      |NEMONICOS              | OPERANDOS             | COMENTARIOS   
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0015   0186           00042                                         CLRF                    TRISB                           ;PUERTO 
+                            B COMO SALIDA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0016   0187           00043                                         CLRF                    TRISC                           ;PUERTO 
+                            C COMO SALIDA
+0017   1283           00044                                         BCF                             STATUS,RP0                      
+                            ;ACCEDER AL BANCO 0
+0018   0987           00045                                         COMF                    PORTC,F                         ;PONER 0
+                            XFF EL PUERTO C 
+                      00046 
+0019                  00047 REINICIO_ANIMACIONES:                   
+                      00048                                         CARGA_ANIMA             ANIMACION_0,.60,2       ;LLAMA MACRO, RE
+                            TARDO = 1000MS, Y CARGA EL NUMERO DE ANIMACION 2        
+                          M                                 
+0019   303C               M                                         MOVLW                   .60                                     
+                                    ;CUANTAS REPETICIONES HACER PARA GENERAR UN RETARDO PARA 1/60 DE SEG
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+001A   00A3               M                                         MOVWF                   REPETICIONES                            
+                            ;CARGAR EN NUMERO DE REPETICIONES PARA GENERAR UN CAMBIO.
+001B   3010               M ANIMACION_0:                       MOVLW                   8*2                                          
+                            ;MPLAB CARGA 8 * NUM_ANIM QUE SE REQUIERA, NUM_ANIM=0,1,2,3
+001C   00A1               M                                         MOVWF                   NUMERO_ANIMACION                        
+                            ;EL NUMERO DE ANIMACION GENERADO DE ACUERDO A LA TABLA
+001D   2036               M                                         CALL                    ANIMACIONES                             
+                                    ;LLAMADO A SUBRUTINA
+001E   0BA3               M                                         DECFSZ                  REPETICIONES,F                          
+                            ;GENERAR RETARDO
+001F   281B               M                                         GOTO                    ANIMACION_0
+                      00049                                         CARGA_ANIMA             ANIMACION_1,.120,0      ;LLAMA MACRO, RE
+                            TARDO = 2000MS, Y CARGA EL NUMERO DE ANIMACION 0
+                          M                                 
+0020   3078               M                                         MOVLW                   .120                                    
+                                    ;CUANTAS REPETICIONES HACER PARA GENERAR UN RETARDO PARA 1/60 DE SEG
+0021   00A3               M                                         MOVWF                   REPETICIONES                            
+                            ;CARGAR EN NUMERO DE REPETICIONES PARA GENERAR UN CAMBIO.
+0022   3000               M ANIMACION_1:                       MOVLW                   8*0                                          
+                            ;MPLAB CARGA 8 * NUM_ANIM QUE SE REQUIERA, NUM_ANIM=0,1,2,3
+0023   00A1               M                                         MOVWF                   NUMERO_ANIMACION                        
+                            ;EL NUMERO DE ANIMACION GENERADO DE ACUERDO A LA TABLA
+0024   2036               M                                         CALL                    ANIMACIONES                             
+                                    ;LLAMADO A SUBRUTINA
+0025   0BA3               M                                         DECFSZ                  REPETICIONES,F                          
+                            ;GENERAR RETARDO
+0026   2822               M                                         GOTO                    ANIMACION_1
+                      00050                                         CARGA_ANIMA             ANIMACION_2,.30,0       ;LLAMA MACRO, RE
+                            TARDO = 500MS, Y CARGA EL NUMERO DE ANIMACION 3
+                          M                                 
+0027   301E               M                                         MOVLW                   .30                                     
+                                    ;CUANTAS REPETICIONES HACER PARA GENERAR UN RETARDO PARA 1/60 DE SEG
+0028   00A3               M                                         MOVWF                   REPETICIONES                            
+                            ;CARGAR EN NUMERO DE REPETICIONES PARA GENERAR UN CAMBIO.
+0029   3000               M ANIMACION_2:                       MOVLW                   8*0                                          
+                            ;MPLAB CARGA 8 * NUM_ANIM QUE SE REQUIERA, NUM_ANIM=0,1,2,3
+002A   00A1               M                                         MOVWF                   NUMERO_ANIMACION                        
+                            ;EL NUMERO DE ANIMACION GENERADO DE ACUERDO A LA TABLA
+002B   2036               M                                         CALL                    ANIMACIONES                             
+                                    ;LLAMADO A SUBRUTINA
+002C   0BA3               M                                         DECFSZ                  REPETICIONES,F                          
+                            ;GENERAR RETARDO
+002D   2829               M                                         GOTO                    ANIMACION_2
+                      00051                                         CARGA_ANIMA             ANIMACION_3,.60,1       ;LLAMA MACRO, RE
+                            TARDO = 1000MS, Y CARGA EL NUMERO DE ANIMACION 0
+                          M                                 
+002E   303C               M                                         MOVLW                   .60                                     
+                                    ;CUANTAS REPETICIONES HACER PARA GENERAR UN RETARDO PARA 1/60 DE SEG
+002F   00A3               M                                         MOVWF                   REPETICIONES                            
+                            ;CARGAR EN NUMERO DE REPETICIONES PARA GENERAR UN CAMBIO.
+0030   3008               M ANIMACION_3:                       MOVLW                   8*1                                          
+                            ;MPLAB CARGA 8 * NUM_ANIM QUE SE REQUIERA, NUM_ANIM=0,1,2,3
+0031   00A1               M                                         MOVWF                   NUMERO_ANIMACION                        
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            ;EL NUMERO DE ANIMACION GENERADO DE ACUERDO A LA TABLA
+0032   2036               M                                         CALL                    ANIMACIONES                             
+                                    ;LLAMADO A SUBRUTINA
+0033   0BA3               M                                         DECFSZ                  REPETICIONES,F                          
+                            ;GENERAR RETARDO
+0034   2830               M                                         GOTO                    ANIMACION_3
+0035   2819           00052                                         GOTO                    REINICIO_ANIMACIONES    
+                      00053                                                         
+                      00054 ;--------------------------SUBRUTINAS--------------------------------
+                      00055 
+0036   01A2           00056 ANIMACIONES:            CLRF                    CONTEO_RENGLONES
+0037   0821           00057                                         MOVF                    NUMERO_ANIMACION,W      ;CARGAR A W CON 
+                            EL VALOR DE LA VARIABLE NUMERO_ANIMACION
+0038   00A0           00058                                         MOVWF                   0X20                            ;CARGAR 
+                            LA DIRECCION DE RAM 0X20 CON EL VALOR DE LA VARIABLE NUMERO_ANIMACION
+0039   0820           00059 SACA_DATOS:                     MOVF                    0X20,W                          ;CONTENIDO DE 0X
+                            20 -> W
+003A   2058           00060                                         CALL                    ANIMACION__0                    ;LLAMAR 
+                            A TABLA ANIMACION
+003B   0086           00061                                         MOVWF                   PORTB                           ;VALOR R
+                            ETORNADO DE TABLA A PUERTO B
+                      00062                                         
+003C   0822           00063                                         MOVF                    CONTEO_RENGLONES,W      ;LEER EL CONTENI
+                            DO DE DIRECCION 0X20 RAM
+003D   204F           00064                                         CALL                    RENGLONES                       ;LLAMAR 
+                            A TABLA RENGLONES
+003E   0087           00065                                         MOVWF                   PORTC                           ;VALOR R
+                            ETORNADO DE TABLA A PUERTO C
+                      00066                                         
+                      00067                                         RETARDO_3V              .1,.2,.115                      ;RETARDO
+                             DE 208us (PERSISTENCIA DE LA VISION) 1/(60*8) = 1/480 = 208us
+003F   3001               M                 MOVLW           .1                              ;VAR1
+0040   00E4               M                 MOVWF           0X64
+0041   3002               M                 MOVLW           .2                              ;VAR2
+0042   00E5               M                 MOVWF           0X65                    
+0043   3073               M                 MOVLW           .115                            ;VAR3
+0044   00F3               M                 MOVWF           .115
+0045   208B               M                 CALL            ST3V
+0046   30FF           00068                                         MOVLW                   0XFF                            
+0047   0087           00069                                         MOVWF                   PORTC                           ;PUERTO 
+                            C = 0XFF, APAGA TODOS LOS RENGLONES
+                      00070                                         
+0048   0AA0           00071                                         INCF                    0X20,F                          ;INCREME
+                            NTO EL CONTENIDO DE 0X20 DE LA RAM EN UNA UNIDAD Y LO ALMACENO EN W
+0049   0AA2           00072                                         INCF                    CONTEO_RENGLONES,F
+004A   3008           00073                                         MOVLW                   .8                      
+004B   0622           00074                                         XORWF                   CONTEO_RENGLONES,W      ;CONTENIDO DE LA
+                             DIR 0X20 DE RAM XOR W
+004C   1D03           00075                                         BTFSS                   STATUS,Z                        ;CONTENI
+                            DO DE LA DIR 0X20 DE RAM ==8?
+004D   2839           00076                                         GOTO                    SACA_DATOS                      ;NO, VIS
+                            ULALIZA DATOS EN LA MATRIZ DE LEDS
+004E   0008           00077                                         RETURN          
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00078                                                         
+                      00079 
+                      00080 
+                      00081 ;---------------------------TABLAS--------------------------------
+                      00082 
+004F   0782           00083 RENGLONES:                      ADDWF                   PCL,F                           ;CONTROL DE RENG
+                            LONES SE ACTIVA 1 BIT DEL PUERTO C A LA VEZ
+0050   34FE 34FD 34FB 00084                                         DT                              .254,.253,.251,.247,.239,.223,.1
+                            91,.127
+       34F7 34EF 34DF 
+       34BF 347F 
+                      00085                                         
+0058   0782           00086 ANIMACION__0:           ADDWF                   PCL,F                   
+0059   3400 3424 3424 00087                                         DT                              .0,.36,.36,.36,.129,.66,.60,.0  
+                                    ;CONTROL DE ANIMACION DE CARITA FELIZ SALE POR EL PUERTO B
+       3424 3481 3442 
+       343C 3400 
+0061   3400 3400 3466 00088 ANIMACION__1:           DT                              .0,.0,.102,.0,.129,.66,.60,.0           ;CONTROL
+                             DE ANIMACION DE CARITA FELIZ SALE POR EL PUERTO B, SE LE LLAMA CON W = 8
+       3400 3481 3442 
+       343C 3400 
+0069   3400 3424 3424 00089 ANIMACION__2:           DT                              .0,.36,.36,.36,.0,.0,.126,.0            ;CONTROL
+                             DE ANIMACION DE CARITA SERIA SALE POR EL PUERTO B, SE LE LLAMA CON W = 15                      
+       3424 3400 3400 
+       347E 3400 
+0071   34A5 3442 34A5 00090 ANIMACION__3:           DT                              .165,.66,.165,.0,.0,.0,.126,.129        ;CONTROL
+                             DE ANIMACION DE CARITA TRISTE SALE POR EL PUERTO B, SE LE LLAMA CON W = 23
+       3400 3400 3400 
+       347E 3481 
+                      00091 
+                      00092 ;---------------------------LIBRERIAS--------------------------------
+                      00093                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm>
+                      00001 ;                       MOVLW           .                       ;VAR2
+                      00002 ;                       MOVWF           0X61
+                      00003 ;                       MOVLW           .                       ;VAR1
+                      00004 ;                       MOVWF           0X62
+                      00005 ;                       CALL            ST2V
+                      00006 ;                       RETURN
+                      00007 ;;---------------------------------------------------------
+                      00008 ;                       MOVLW           .                       ;VAR1
+                      00009 ;                       MOVWF           0X64
+                      00010 ;                       MOVLW           .                       ;VAR2
+                      00011 ;                       MOVWF           0X65            
+                      00012 ;                       MOVLW           .                       ;VAR3
+                      00013 ;                       MOVWF           0X66
+                      00014 ;                       CALL            ST3V
+                      00015 
+                      00016 ;--------------------RUTINA DE TIEMPO 1 VAR---------------
+                      00017 
+0079   0000           00018 ST1V:                   NOP
+007A   0000           00019                         NOP
+007B   0000           00020                         NOP 
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+007C   0000           00021                         NOP
+007D   0BE0           00022                         DECFSZ          0X60,F
+007E   2879           00023                         GOTO            ST1V
+007F   0008           00024                         RETURN
+                      00025 
+                      00026                         
+                      00027 ;SUBRUTINA DE TIEMPO DE 2 VARIABLES
+0080   0862           00028 ST2V:                   MOVF            0X62,W
+0081   00E3           00029                         MOVWF           0X63
+0082   0000           00030 DECRE2V:                NOP
+0083   0000           00031                         NOP
+0084   0000           00032                         NOP
+0085   0000           00033                         NOP
+0086   0BE3           00034                         DECFSZ          0X63,F
+0087   2882           00035                         GOTO            DECRE2V
+0088   0BE1           00036                         DECFSZ          0X61,F
+0089   2880           00037                         GOTO            ST2V
+008A   0008           00038                         RETURN
+                      00039 
+                      00040                         
+                      00041 ;SUBRUTINA DE TIEMPO DE 3 VARIABLES
+008B   0866           00042 ST3V:                   MOVF            0X66,W
+008C   00E7           00043                         MOVWF           0X67
+008D   0865           00044 RECARGA3V:              MOVF            0X65,W
+008E   00E8           00045                         MOVWF           0X68
+008F   0000           00046 DECRE3V:                NOP
+0090   0000           00047                         NOP
+0091   0000           00048                         NOP
+0092   0000           00049                         NOP
+0093   0BE8           00050                         DECFSZ          0X68,F
+0094   288F           00051                         GOTO            DECRE3V
+0095   0BE7           00052                         DECFSZ          0X67,F
+0096   288D           00053                         GOTO            RECARGA3V
+0097   0BE4           00054                         DECFSZ          0X64,F
+0098   288B           00055                         GOTO            ST3V
+0099   0008           00056                         RETURN
+                      00057 
+009A                  00058 SUBT25MS                ;RETARDO DE 25mS PARA EL USO DE LA FUNCION ANTIREBOTES                          
+                      00094                                                 
+                      00095                                         END
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE  8
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ABDEN                             00000000
+ABDOVF                            00000007
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ANIMACIONES                       00000036
+ANIMACION_0                       0000001B
+ANIMACION_1                       00000022
+ANIMACION_2                       00000029
+ANIMACION_3                       00000030
+ANIMACION__0                      00000058
+ANIMACION__1                      00000061
+ANIMACION__2                      00000069
+ANIMACION__3                      00000071
+ANS0                              00000000
+ANS1                              00000001
+ANS10                             00000002
+ANS11                             00000003
+ANS12                             00000004
+ANS13                             00000005
+ANS2                              00000002
+ANS3                              00000003
+ANS4                              00000004
+ANS5                              00000005
+ANS6                              00000006
+ANS7                              00000007
+ANS8                              00000000
+ANS9                              00000001
+ANSEL                             00000188
+ANSELH                            00000189
+BAUDCTL                           00000187
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRG0                              00000000
+BRG1                              00000001
+BRG10                             00000002
+BRG11                             00000003
+BRG12                             00000004
+BRG13                             00000005
+BRG14                             00000006
+BRG15                             00000007
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE  9
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BRG16                             00000003
+BRG2                              00000002
+BRG3                              00000003
+BRG4                              00000004
+BRG5                              00000005
+BRG6                              00000006
+BRG7                              00000007
+BRG8                              00000000
+BRG9                              00000001
+BRGH                              00000002
+C                                 00000000
+C1CH0                             00000000
+C1CH1                             00000001
+C1IE                              00000005
+C1IF                              00000005
+C1OE                              00000005
+C1ON                              00000007
+C1OUT                             00000006
+C1POL                             00000004
+C1R                               00000002
+C1RSEL                            00000005
+C1SEN                             00000005
+C2CH0                             00000000
+C2CH1                             00000001
+C2IE                              00000006
+C2IF                              00000006
+C2OE                              00000005
+C2ON                              00000007
+C2OUT                             00000006
+C2POL                             00000004
+C2R                               00000002
+C2REN                             00000004
+C2RSEL                            00000004
+C2SYNC                            00000000
+CARGA_ANIMA                       
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE 10
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+CHS3                              00000005
+CKE                               00000006
+CKP                               00000004
+CM1CON0                           00000107
+CM2CON0                           00000108
+CM2CON1                           00000109
+CONFIGURACION                     00000001
+CONTEO_RENGLONES                  00000022
+CREN                              00000004
+CSRC                              00000007
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+DC1B0                             00000004
+DC1B1                             00000005
+DC2B0                             00000004
+DC2B1                             00000005
+DECRE2V                           00000082
+DECRE3V                           0000008F
+D_A                               00000005
+D_NOT_A                           00000005
+ECCPAS                            0000009C
+ECCPAS0                           00000004
+ECCPAS1                           00000005
+ECCPAS2                           00000006
+ECCPASE                           00000007
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDAT                             0000010C
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+F                                 00000001
+FERR                              00000002
+FSR                               00000004
+FVREN                             00000000
+GCEN                              00000007
+GIE                               00000007
+GO                                00000001
+GO_DONE                           00000001
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE 11
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+GO_NOT_DONE                       00000001
+HTS                               00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+INDF                              00000000
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+IOCB                              00000096
+IOCB0                             00000000
+IOCB1                             00000001
+IOCB2                             00000002
+IOCB3                             00000003
+IOCB4                             00000004
+IOCB5                             00000005
+IOCB6                             00000006
+IOCB7                             00000007
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRP                               00000007
+LTS                               00000001
+MC1OUT                            00000007
+MC2OUT                            00000006
+MSK                               00000093
+MSK0                              00000000
+MSK1                              00000001
+MSK2                              00000002
+MSK3                              00000003
+MSK4                              00000004
+MSK5                              00000005
+MSK6                              00000006
+MSK7                              00000007
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000001
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+NUMERO_ANIMACION                  00000021
+OERR                              00000001
+OPTION_REG                        00000081
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE 12
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OSCCON                            0000008F
+OSCTUNE                           00000090
+OSFIE                             00000007
+OSFIF                             00000007
+OSTS                              00000003
+P                                 00000004
+P1M0                              00000006
+P1M1                              00000007
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PDC0                              00000000
+PDC1                              00000001
+PDC2                              00000002
+PDC3                              00000003
+PDC4                              00000004
+PDC5                              00000005
+PDC6                              00000006
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PRSEN                             00000007
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSSAC0                            00000002
+PSSAC1                            00000003
+PSSBD0                            00000000
+PSSBD1                            00000001
+PSTRCON                           0000009D
+PULSR                             00000002
+PULSS                             00000003
+PWM1CON                           0000009B
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
+RB0                               00000000
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE 13
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIDL                             00000006
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+RE3                               00000003
+READ_WRITE                        00000002
+RECARGA3V                         0000008D
+REINICIO_ANIMACIONES              00000019
+RENGLONES                         0000004F
+REPETICIONES                      00000023
+RETARDO_1V                        
+RETARDO_2V                        
+RETARDO_3V                        
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE 14
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+R_W                               00000002
+S                                 00000003
+SACA_DATOS                        00000039
+SBOREN                            00000004
+SCKP                              00000004
+SCS                               00000000
+SEN                               00000000
+SENDB                             00000003
+SMP                               00000007
+SPBRG                             00000099
+SPBRGH                            0000009A
+SPEN                              00000007
+SR0                               00000006
+SR1                               00000007
+SRCON                             00000185
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPMSK                            00000093
+SSPOV                             00000006
+SSPSTAT                           00000094
+ST1V                              00000079
+ST2V                              00000080
+ST3V                              0000008B
+STATUS                            00000003
+STRA                              00000000
+STRB                              00000001
+STRC                              00000002
+STRD                              00000003
+STRSYNC                           00000004
+SUBT25MS                          0000009A
+SWDTEN                            00000000
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1GINV                            00000007
+T1GIV                             00000007
+T1GSS                             00000001
+T1INSYNC                          00000002
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1GE                            00000006
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISA6                            00000006
+TRISA7                            00000007
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRISE3                            00000003
+TRMT                              00000001
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+ULPWUE                            00000005
+ULPWUIE                           00000002
+ULPWUIF                           00000002
+VCFG0                             00000004
+VCFG1                             00000005
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             00000097
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+VRSS                              00000004
+W                                 00000000
+WCOL                              00000007
+WDTCON                            00000105
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WPUB                              00000095
+WPUB0                             00000000
+WPUB1                             00000001
+WPUB2                             00000002
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+WPUB3                             00000003
+WPUB4                             00000004
+WPUB5                             00000005
+WPUB6                             00000006
+WPUB7                             00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+WUE                               00000001
+Z                                 00000002
+_BOR21V                           00003EFF
+_BOR40V                           00003FFF
+_BOR4V_BOR21V                     00003EFF
+_BOR4V_BOR40V                     00003FFF
+_BOREN_NSLEEP                     00003EFF
+_BOREN_OFF                        00003CFF
+_BOREN_ON                         00003FFF
+_BOREN_SBODEN                     00003DFF
+_BOR_NSLEEP                       00003EFF
+_BOR_OFF                          00003CFF
+_BOR_ON                           00003FFF
+_BOR_SBODEN                       00003DFF
+_CONFIG1                          00002007
+_CONFIG2                          00002008
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003F7F
+_CP_OFF                           00003FFF
+_CP_ON                            00003FBF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         00001FFF
+_DEVID1                           00002006
+_EC_OSC                           00003FFB
+_EXTRC                            00003FFF
+_EXTRCIO                          00003FFE
+_EXTRC_OSC_CLKOUT                 00003FFF
+_EXTRC_OSC_NOCLKOUT               00003FFE
+_FCMEN_OFF                        000037FF
+_FCMEN_ON                         00003FFF
+_FOSC_EC                          00003FFB
+_FOSC_EXTRC_CLKOUT                00003FFF
+_FOSC_EXTRC_NOCLKOUT              00003FFE
+_FOSC_HS                          00003FFA
+_FOSC_INTRC_CLKOUT                00003FFD
+_FOSC_INTRC_NOCLKOUT              00003FFC
+_FOSC_LP                          00003FF8
+_FOSC_XT                          00003FF9
+_HS_OSC                           00003FFA
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_IESO_OFF                         00003BFF
+_IESO_ON                          00003FFF
+MPASM  5.51                  MATRIZ_CARAS.ASM   5-12-2021  12:14:00         PAGE 18
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_INTOSC                           00003FFD
+_INTOSCIO                         00003FFC
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FF8
+_LVP_OFF                          00002FFF
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FEF
+_WDTE_OFF                         00003FF7
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FF7
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FF9
+__16F887                          00000001
+__DEBUG                           1
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXX------ ---------------- ----------------
+2000 : -------XX------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   154
+Program Memory Words Free:  8038
+
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     9 reported,     0 suppressed
+
+

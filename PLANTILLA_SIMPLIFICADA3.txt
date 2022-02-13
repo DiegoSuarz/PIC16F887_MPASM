@@ -1,0 +1,41 @@
+;DESCRIPCION:
+;
+;---------------------------MACROS-----------------------------------
+
+;---------------------------DEFINE-----------------------------------
+
+;----------------------------EQU--------------------------------------
+
+;---------------------------HEADER--------------------------------------
+					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_LCD.ASM>		
+					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS_MACROS.ASM> ;MACRO DE RETARDO
+					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\PLANTILLA.ASM>	;CONFIGURACION BASICA
+
+			;NOS DEJA EN EL BANCO 1	
+
+;-----------------------CODIGO PRINCIPAL------------------------------
+;ETIQUETAS			|NEMONICOS		| OPERANDOS 		| COMENTARIOS	
+					
+
+					
+;-------------------------SUBRUTINAS----------------------------------
+
+;---------------------------TABLAS------------------------------------
+
+
+;----------------------------TABLAS_LCD-------------------------------
+;*************************************               *****************
+;					MENSAJE_F1		"               "		
+;					MENSAJE_F2		"               "	
+
+;---------------------------LIBRERIAS--------------------------------
+;					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm>
+;					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm>		
+					END
+
+;COMENTARIOS
+;PARA INICIALIZAR PANTALLA LCD: LLAMAR SUBRUTINA   INIT_LCD
+;PARA ESCOJER UNA COLUMNA DE LA FILA1:  	FILA1_COLUMNA	.X		X: 0-15
+;MOSTRAR MENSAJE EN LA FILA 1 CON LA MACRO  	MENSAJE_FILA1	
+;PARA ESCOJER UNA COLUMNA DE LA FILA2:  	FILA2_COLUMNA	.X		X: 0-15
+;MOSTRAR MENSAJE EN LA FILA 2 CON LA MACRO  	MENSAJE_FILA2	

@@ -1,0 +1,33 @@
+;DESCRIPCION:
+;SI EL PB.0 == 0, PD = 0XF5
+;SI EL PB.0 == 1, PD = 0X24
+
+			INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\00_PLANTILLA\PLANTILLA.ASM>
+			;NOS DEJA EN EL BANCO 1	
+			
+;ETIQUETAS | NEMONICOS | OPERANDOS 		| COMENTARIOS	
+			MOVLW		0X01
+			MOVWF		TRISB
+			CLRF		TRISD
+			BCF			STATUS,RP0
+			
+;LOOP:
+;			BTFSS		PORTB,0
+;			GOTO		PORTD_LOW
+;			MOVLW		0X24
+;			MOVWF		PORTD
+;			GOTO 		LOOP
+;
+;PORTD_LOW:
+;			MOVLW		0XF5
+;			MOVWF		PORTD
+;			GOTO 		LOOP
+;					
+;			END
+;---------------------------------------------------------------
+LOOP:
+			MOVLW		0XF5
+			BTFSC		PORTB,0
+			MOVLW		0X24
+			MOVWF		PORTD
+			END		

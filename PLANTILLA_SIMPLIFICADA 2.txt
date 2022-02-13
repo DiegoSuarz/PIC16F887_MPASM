@@ -1,0 +1,26 @@
+;DESCRIPCION:
+;
+;---------------------------MACROS-----------------------------------
+
+;---------------------------DEFINE-----------------------------------
+
+;----------------------------EQU--------------------------------------
+
+;---------------------------HEADER--------------------------------------
+					
+			INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS_MACROS.ASM> ;MACRO DE RETARDO
+			INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\PLANTILLA.ASM>	;CONFIGURACION BASICA
+
+			;NOS DEJA EN EL BANCO 1	
+
+;-----------------------CODIGO PRINCIPAL------------------------------
+;ETIQUETAS			|NEMONICOS		| OPERANDOS 		| COMENTARIOS	
+					
+					
+;--------------------------SUBRUTINAS--------------------------------
+
+;----------------------------TABLAS---------------------------------- 
+;---------------------------LIBRERIAS--------------------------------
+;			INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS.asm>
+					
+			END

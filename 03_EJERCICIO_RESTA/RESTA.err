@@ -1,0 +1,4 @@
+Message[302] D:\ARCHIVOS\PROGRAMACION\MICROCONTROLADORES\PIC\ASSEMBLER\MPASM\PIC16F887\3_EJERCICIO_RESTA\RESTA.ASM 27 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] D:\ARCHIVOS\PROGRAMACION\MICROCONTROLADORES\PIC\ASSEMBLER\MPASM\PIC16F887\3_EJERCICIO_RESTA\RESTA.ASM 28 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] D:\ARCHIVOS\PROGRAMACION\MICROCONTROLADORES\PIC\ASSEMBLER\MPASM\PIC16F887\3_EJERCICIO_RESTA\RESTA.ASM 30 : Register in operand not in bank 0.  Ensure that bank bits are correct.
+Message[302] D:\ARCHIVOS\PROGRAMACION\MICROCONTROLADORES\PIC\ASSEMBLER\MPASM\PIC16F887\3_EJERCICIO_RESTA\RESTA.ASM 33 : Register in operand not in bank 0.  Ensure that bank bits are correct.

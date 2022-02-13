@@ -1,0 +1,47 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Sat Apr 17 20:53:21 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000070
+   .config_2007_RETARDO.O       code   0x002007    program   0x000002
+   .config_2008_RETARDO.O       code   0x002008    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000037      
+                            0x002007    0x002008      
+            58 out of 8455 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+            CONFIGURACION   0x000001    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\00_PLANTILLA\PLANTILLA.ASM
+                  DECRE2V   0x000021    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+                     LOOP   0x000017    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+                      RET   0x000031    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+              RETARDO_193   0x00002a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+            RETARDO_200MS   0x00001b    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+                     ST2V   0x00001f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+            CONFIGURACION   0x000001    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\00_PLANTILLA\PLANTILLA.ASM
+                     LOOP   0x000017    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+            RETARDO_200MS   0x00001b    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+                     ST2V   0x00001f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+                  DECRE2V   0x000021    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+              RETARDO_193   0x00002a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+                      RET   0x000031    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\14_RETARDO_2VAR\RETARDO.asm
+
+

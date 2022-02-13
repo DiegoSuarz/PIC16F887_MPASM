@@ -1,0 +1,39 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Wed Apr 28 16:55:56 2021
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x00003e
+.config_2007_DIR_INDIRECTO.O       code   0x002007    program   0x000002
+.config_2008_DIR_INDIRECTO.O       code   0x002008    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00001e      
+                            0x002007    0x002008      
+            33 out of 8455 program addresses used, program memory utilization is 0%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+               CARGA_DATO   0x000017    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\23_DIRECCIONAMIENTO_INDIRECTO_2\DIR_INDIRECTO.asm
+            CONFIGURACION   0x000001    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\PLANTILLA.ASM
+              DESCRIPCION   0x000000    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\23_DIRECCIONAMIENTO_INDIRECTO_2\DIR_INDIRECTO.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+              DESCRIPCION   0x000000    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\23_DIRECCIONAMIENTO_INDIRECTO_2\DIR_INDIRECTO.asm
+            CONFIGURACION   0x000001    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\PLANTILLA.ASM
+               CARGA_DATO   0x000017    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\23_DIRECCIONAMIENTO_INDIRECTO_2\DIR_INDIRECTO.asm
+
+

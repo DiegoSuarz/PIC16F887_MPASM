@@ -1,0 +1,23 @@
+;-----------------------MACRO PARA DSP 7 SEG CATODO COMUN-------------------------------
+
+SIETE_SG_KC		MACRO
+	
+SIETE_SEG:						
+			ADDWF		PCL,F
+
+			DT			0X3F,0X06,0X5B,0X4F,0X66,0X7D,0X07,0X7F,0X6F,0X77,0X7C,0X39,0X5E,0X79,0X71
+			ENDM
+
+;*********************************************************************************************
+
+;-------------------------MACRO PARA MANEJO DE PULSADORES-----------------------------------
+PUSH_ANTIR	MACRO	PUERTO,PIN
+			BTFSC	PUERTO,PIN
+			GOTO    $-1
+			CALL	SUBT25MS
+			BTFSS	PUERTO,PIN
+			GOTO	$-1
+			CALL	SUBT25MS
+			ENDM
+
+;************************************************************************************************

@@ -1,0 +1,72 @@
+;DESCRIPCION:
+;CALCULAS VALORES PARA CREAR UN RETARDO DE 1MS
+
+			INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\00_PLANTILLA\PLANTILLA.ASM>
+			;NOS DEJA EN EL BANCO 1	
+			
+;ETIQUETAS | NEMONICOS | OPERANDOS 		| COMENTARIOS	
+			CLRF		TRISD
+			BCF			STATUS,RP0
+			
+LOOP:
+			COMF		PORTD,F
+			CALL		RETARDO_200MS
+			CALL		RETARDO_193		;RETARDOS PARA 200MS
+			GOTO		LOOP
+									
+;-------------------SUBRUTINA DE 2 VARIABLES-------------------------------------			
+RETARDO_200MS:						
+			MOVLW		.180	
+			MOVWF		0X61
+			MOVLW		.158
+			MOVWF		0X62
+ST2V:		MOVF		0X62,W
+			MOVWF		0X63
+			
+DECRE2V:	NOP
+			NOP
+			NOP
+			NOP
+			DECFSZ		0X63,F
+			GOTO		DECRE2V
+			DECFSZ		0X61,F
+			GOTO		ST2V
+			RETURN
+;-------------------SUBRUTINA DE 1 VARIABLE-------------------------------------						
+
+RETARDO_193:
+									
+			MOVLW		.26		
+			MOVWF		0X60
+			
+			NOP
+			NOP
+			NOP
+			NOP
+			NOP
+					
+RET			NOP						
+			NOP						
+			NOP						
+			NOP						
+			DECFSZ		0X60,F	
+			GOTO		RET			
+			RETURN					
+			END
+			
+
+
+
+
+
+;FORMULA PARA RETARDO DE 2 VARIABLES:
+
+;   #CM = 7+(4)(VAR2)+(#NOP+3)(VAR1)(VAR2) CM=CICLOS DE MAQUINA
+
+;PARA 200000uS =200ms , NOP = 4
+; TCY=1us
+;VAR2=180  VAR1=158.1532-> 158  
+;	#CM = 7+(4)(180)+(4+3)(158)(180) = 199807CM -> FALTAN 193(SE DEBE HACER UN RETARDO DE 1 VARIABLE)
+
+;CALCULO DEL TIEMPO:
+;	5CM+VAR(4+3)CM	= 193CM  ->VAR=(193-5)/7 = 26.85 -> 26
