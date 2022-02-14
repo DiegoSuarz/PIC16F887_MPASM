@@ -1,0 +1,1877 @@
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;DESCRIPCION:
+                      00002 ;DEBE TENER CONECTADO UN TECLADO MATRIVILA DE 4X4 EN EL PUERTO B, CUANDO
+                      00003 ;SE APRIETE CUALQUIER TECHA DEBERA INTERRUMPIR Y DESPLIGAR EN LA LCD (PUERTO C)
+                      00004 ;EL NUMERO DE LA TECLA QUE SE ESTA APRETANDO (EN HEXADECIMAL)
+                      00005 ;EN EL PROGRAMA PRINCIPAL ESTARA DE FORMA PERMANENTE EL CONTADOR DE
+                      00006 ;00 A 99 POR LOD DISPLAYS DE 7 SEGMENTOS.
+                      00007 ;LA LCD LLEVARA UN CONTEO CON ESPACIOS DE TIEMPO DE 0.5s CREADO POR TIMER 0
+                      00008 ;TAMBIEN, CADA 0.5 S ADENTRO DE LA INTERRUPCION DEL TIMER0 SE HARA UNA CONVERSION
+                      00009 ;SE IMPRIMIRA EL RESULTADO DE UNA CONVERSION ANALOGICO DIGITAL
+                      00010 ;CAD Vres=2.5558 V. EL PINA ANALOGICO A UTILIZAR COMO ENTRADA SERA RE2/AN7.RELOJ ADC, RC INTERNO.
+                      00011 ;LAS CADENAS DE LA LCD SERAN:
+                      00012 ;"XXX Vi:XXXX.X mV"
+                      00013 ;"TECLA:          "
+                      00014 ;---------------------------MACROS----------------------------
+                      00015 ;---------------------------DEFINE----------------------------
+                      00016 ;----------------------------EQU------------------------------
+  00000023            00017 CONT5           EQU 0X23
+  00000024            00018 ALEATORIO       EQU     0X24
+  00000028            00019 CONT_T0         EQU     0X28
+  00000029            00020 DECIMAL         EQU 0X29
+  00000030            00021 NUMERO          EQU 0X30
+                      00022 
+  0000002C            00023 ESTADO_PB       EQU     0X2C
+  0000002D            00024 ES_NUEVO_PB EQU 0X2D
+                      00025 
+  0000002E            00026 TECLADO4X4      EQU 0X2E
+  0000002F            00027 CONT_TECL       EQU     0X2F
+  00000031            00028 ADL                     EQU     0X31
+                      00029 
+                      00030 ;---------------------------CBLOCK----------------------------
+Warning[205]: Found directive in column 1. (CBLOCK)
+                      00031 CBLOCK          0X25
+  00000025            00032                                         UNIDADES,DECENAS,CENTENAS
+                      00033                         ENDC
+                      00034 ;---------------------------HEADER----------------------------
+                      00035                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_INTERRUPT.ASM>      ;MACRO PARA EL USO DE INTERRUPCI
+                      00001 ;GUARDAR VARIABLES STATUS,PC,W,VARIABLE DE RETARDO
+Warning[205]: Found directive in column 1. (CBLOCK)
+                      00002 CBLOCK          0X70
+  00000070            00003                                                                 SAVE_W,SAVE_STATUS,SAVE_PC
+Warning[205]: Found directive in column 1. (ENDC)
+                      00004 ENDC
+                      00005 
+                      00006 
+                      00007 SAVE_REG        MACRO
+                      00008                         MOVWF           SAVE_W
+                      00009                         SWAPF           STATUS,W
+                      00010                         MOVWF           SAVE_STATUS
+                      00011                         CLRF            STATUS
+                      00012                         MOVF            PCLATH,W
+                      00013                         MOVWF           SAVE_PC
+                      00014                         MOVF            0X60,W
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00015                         MOVWF           0X75
+                      00016                         MOVF            0X61,W
+                      00017                         MOVWF           0X76 
+                      00018                         MOVF            0X61,W
+                      00019                         MOVWF           0X76
+                      00020                         MOVF            0X62,W
+                      00021                         MOVWF           0X77
+                      00022                         MOVF            0X63,W
+                      00023                         MOVWF           0X78
+                      00024                         MOVF            0X64,W
+                      00025                         MOVWF           0X79
+                      00026                         MOVF            0X65,W
+                      00027                         MOVWF           0X7A
+                      00028                         MOVF            0X66,W
+                      00029                         MOVWF           0X7B
+                      00030                         MOVF            0X67,W
+                      00031                         MOVWF           0X7C
+                      00032                         MOVF            0X68,W
+                      00033                         MOVWF           0X7D
+                      00034                         ENDM
+                      00035 
+                      00036 RESTORE_REG MACRO
+                      00037                         MOVF                    0X75,W
+                      00038                         MOVWF                   0X60
+                      00039                         MOVF                    0X76,W
+                      00040                         MOVWF                   0X61
+                      00041                         MOVF                    0X77,W
+                      00042                         MOVWF                   0X62
+                      00043                         MOVF                    0X78,W
+                      00044                         MOVWF                   0X63
+                      00045                         MOVF                    0X78,W
+                      00046                         MOVWF                   0X64
+                      00047                         MOVF                    0X7A,W
+                      00048                         MOVWF                   0X65
+                      00049                         MOVF                    0X7B,W
+                      00050                         MOVWF                   0X66
+                      00051                         MOVF                    0X7C,W
+                      00052                         MOVWF                   0X67
+                      00053                         MOVF                    0X7D,W
+                      00054                         MOVWF                   0X68
+                      00055                         MOVF                    SAVE_PC,W
+                      00056                         MOVWF                   PCLATH
+                      00057                         SWAPF                   SAVE_STATUS,W
+                      00058                         MOVWF                   STATUS
+                      00059                         SWAPF                   SAVE_W,F
+                      00060                         SWAPF                   SAVE_W,W
+                      00061                         ENDM
+                      00036                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_LCD.ASM>    ;MACRO PARA EL USO DISPLAY LCD
+                      00001 ;PUERTO EQU PORTB
+                      00002 ;PUERTO  EQU    PORTC
+                      00003 ;;---------------------------DEFINE-----------------------------------
+                      00004 ;#DEFINE                RS_0    BCF             PUERTO,4
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00005 ;#DEFINE                RS_1    BSF             PUERTO,4
+                      00006 ;#DEFINE                E_0             BCF             PUERTO,5
+                      00007 ;#DEFINE                E_1             BSF             PUERTO,5
+                      00008 
+                      00009 ;----------------------------EQU--------------------------------------
+  0000002A            00010 DATO            EQU             0X2A
+                      00011 
+                      00012 ;---------------------------MACROS-----------------------------------
+                      00013 
+                      00014 FILA1_POSICION          MACRO                   POSICION1
+                      00015                                         MOVLW                   POSICION1                               
+                                    ;POSICIONARSE EN LA SEGUNDA FILA
+                      00016                                         CALL                    DIRECCION_DDRAM
+                      00017                                         ENDM
+                      00018 
+                      00019 FILA2_POSICION          MACRO                   POSICION2
+                      00020                                         MOVLW                   0X40+POSICION2                          
+                                    ;POSICIONARSE EN LA SEGUNDA FILA
+                      00021                                         CALL                    DIRECCION_DDRAM
+                      00022                                         ENDM
+                      00023 
+                      00037                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_7SEG.ASM>   ;MACRO PARA EL USO DISPLAY 7 SEG        
+                      00001 #DEFINE UNIDAD_ENA      BSF     PORTA,0
+                      00002 #DEFINE UNIDAD_DIS      BCF     PORTA,0
+                      00003 #DEFINE DECENA_ENA      BSF     PORTA,1
+                      00004 #DEFINE DECENA_DIS      BCF     PORTA,1
+                      00005 
+  00000020            00006 UNIDAD          EQU     0X20
+  00000021            00007 DECENA          EQU 0X21        
+  00000022            00008 CONT60          EQU     0X22
+                      00009 
+                      00010 
+                      00011 SIETE_SG_KC     MACRO
+                      00012 SIETE_SEG:                                              
+                      00013                         ADDWF           PCL,F
+                      00014 
+                      00015                         DT                      0X3F,0X06,0X5B,0X4F,0X66,0X7D,0X07,0X7F,0X6F,0X77,0X7C,0
+                            X39,0X5E,0X79,0X71
+                      00016                         ENDM
+                      00038                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS_MACROS.ASM> ;MACRO DE RETARDO
+                      00001 ;---------RETARDO 1 VARIABLE-----------------
+                      00002 
+                      00003 RETARDO_1V      MACRO           VAR1
+                      00004                 MOVLW           VAR1
+                      00005                 MOVWF           0X60
+                      00006                 CALL            ST1V
+                      00007                 ENDM
+                      00008 
+                      00009 ;---------RETARDO 2 VARIABLES-----------------
+                      00010 RETARDO_2V      MACRO           VAR1,VAR2
+                      00011                 MOVLW           VAR1
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00012                 MOVWF           0X61
+                      00013                 MOVLW           VAR2
+                      00014                 MOVWF           0X62
+                      00015                 CALL            ST2V
+                      00016                 ENDM
+                      00017 
+                      00018 ;---------RETARDO 3 VARIABLES-----------------
+                      00019 RETARDO_3V      MACRO           VAR1,VAR2,VAR3
+                      00020                 MOVLW           VAR1                            ;VAR1
+                      00021                 MOVWF           0X64
+                      00022                 MOVLW           VAR2                            ;VAR2
+                      00023                 MOVWF           0X65                    
+                      00024                 MOVLW           VAR3                            ;VAR3
+                      00025                 MOVWF           VAR3
+                      00026                 CALL            ST3V
+                      00027                 ENDM
+                      00028 ;---------------------------------------------------
+                      00039                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_CONFIGURACION_INT.ASM> ;MACRO DE CONFIGURACION BASIC
+                      00001 ;PLANTILLA PARA CONFIGURACION BASICA
+                      00002 VECTOR_INTERRUPCION             MACRO           
+                      00003                                         ORG                     0X0004                  ;VECTOR DE INTER
+                            RUPCION
+                      00004                                         SAVE_REG                                        ;GUARDAR REGISTR
+                            OS DE INTERES
+                      00005                                         GOTO            ISR                             ;IR A RUTINA DE 
+                            SERVICIO DE INTERRUPCION
+                      00006                                 ENDM
+                      00007 
+                      00008 
+                      00009 
+                      00010 ;ETIQUETAS | NEMONICOS | OPERANDOS              | COMENTARIOS   
+                      00011 
+                      00012 CONFIGURACION           MACRO
+                      00013                 
+                      00014 INICIALIZA:                     BSF                     STATUS,RP0
+                      00015                                         BSF                     STATUS,RP1              ;ACCEDIENDO AL B
+                            ANCO 3
+                      00016                                         CLRF            ANSEL
+                      00017                                         CLRF            ANSELH                  ;TODOS LOS PINES DIGITAL
+                            ES
+                      00018                         
+                      00019                                         BCF                     STATUS,RP1
+                      00020                                         BSF                     STATUS,RP0              ;ACCEDIENDO AL B
+                            ANCO 1
+                      00021                                         CLRF            TRISA                   ;PUERTO A COMO ENTRADA
+                      00022                                         CLRF            TRISB                   ;PUERTO B COMO SALIDA
+                      00023                                         CLRF            TRISC                   ;PUERTO C COMO ENTRADA
+                      00024                                         CLRF            TRISD                   ;PUERTO D COMO SALIDA
+                      00025                                         CLRF            TRISE                   ;PUERTO E COMO ENTRADA
+                      00026                         
+                      00027 
+                      00028                                         BCF                     STATUS,RP0              
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00029                                         BCF                     STATUS,RP1              ;ACCEDIENDO AL B
+                            ANCO 0
+                      00030                                         CLRF            PORTA                   ;LIMPIAR EL PUERTO A
+                      00031                                         CLRF            PORTB                   ;LIMPIAR EL PUERTO B
+                      00032                                         CLRF            PORTC                   ;LIMPIAR EL PUERTO C
+                      00033                                         CLRF            PORTD                   ;LIMPIAR EL PUERTO D
+                      00034                                         CLRF            PORTE                   ;LIMPIAR EL PUERTO E
+                      00035                 
+                      00036                                         BCF                     STATUS,RP1
+                      00037                                         BSF                     STATUS,RP0              ;ACCEDIENDO AL B
+                            ANCO 1
+                      00038                                         ENDM    
+                      00039 
+                      00040         PROCESSOR       16F887
+2007   23E4           00041                                         __CONFIG        0X2007,23E4
+2008   3FFF           00042                                         __CONFIG        0X2008,3FFF
+                      00043                                         INCLUDE         <P16F887.INC>   
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F887 processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00809         LIST
+0000                  00040                                         ORG                     0X0000                  ;EMPEZAR EN LA D
+                            IRECCION 0 DE LA MEMORIA DE PROGRAMA
+0000   2856           00041                                         GOTO            INICIALIZA
+                      00042                                         VECTOR_INTERRUPCION                     ;SI SE USA INTERRUPCIONE
+                            S DESCOMENTAR
+0004                      M                                         ORG                     0X0004                  ;VECTOR DE INTER
+                            RUPCION
+                          M                                         SAVE_REG                                        ;GUARDAR REGISTR
+                            OS DE INTERES
+0004   00F0               M                         MOVWF           SAVE_W
+0005   0E03               M                         SWAPF           STATUS,W
+0006   00F1               M                         MOVWF           SAVE_STATUS
+0007   0183               M                         CLRF            STATUS
+0008   080A               M                         MOVF            PCLATH,W
+0009   00F2               M                         MOVWF           SAVE_PC
+000A   0860               M                         MOVF            0X60,W
+000B   00F5               M                         MOVWF           0X75
+000C   0861               M                         MOVF            0X61,W
+000D   00F6               M                         MOVWF           0X76 
+000E   0861               M                         MOVF            0X61,W
+000F   00F6               M                         MOVWF           0X76
+0010   0862               M                         MOVF            0X62,W
+0011   00F7               M                         MOVWF           0X77
+0012   0863               M                         MOVF            0X63,W
+0013   00F8               M                         MOVWF           0X78
+0014   0864               M                         MOVF            0X64,W
+0015   00F9               M                         MOVWF           0X79
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0016   0865               M                         MOVF            0X65,W
+0017   00FA               M                         MOVWF           0X7A
+0018   0866               M                         MOVF            0X66,W
+0019   00FB               M                         MOVWF           0X7B
+001A   0867               M                         MOVF            0X67,W
+001B   00FC               M                         MOVWF           0X7C
+001C   0868               M                         MOVF            0X68,W
+001D   00FD               M                         MOVWF           0X7D
+001E   28B1               M                                         GOTO            ISR                             ;IR A RUTINA DE 
+                            SERVICIO DE INTERRUPCION
+                      00043                                         SIETE_SG_KC                                     ;SI SE USA DISPL
+                            AY 7 SEG DESCOMENTAR
+001F                      M SIETE_SEG:                                              
+001F   0782               M                         ADDWF           PCL,F
+                          M 
+0020   343F 3406 345B     M                         DT                      0X3F,0X06,0X5B,0X4F,0X66,0X7D,0X07,0X7F,0X6F,0X77,0X7C,0
+                            X39,0X5E,0X79,0X71
+       344F 3466 347D 
+       3407 347F 346F 
+       3477 347C 3439 
+       345E 3479 3471 
+                      00044                                         
+                      00045 
+002F   0782           00046 TABLA_LCD                       ADDWF                   PCL,F
+0030   0782           00047 LCD_FILA1                       ADDWF                   PCL,F
+                      00048 ;************************************                ***************************************************
+                            **********************
+0031   3420 3420 3420 00049                                         DT                              "    Vi:           mV"
+       3420 3456 3469 
+       343A 3420 3420 
+       3420 3420 3420 
+       3420 3420 3420 
+       3420 3420 3420 
+       346D 3456 
+0045   0782           00050 LCD_FILA2                       ADDWF                   PCL,F
+                      00051 ;************************************                ***************************************************
+                            **********************
+0046   3454 3445 3443 00052                                         DT                              "TECLA           "              
+                                                            
+       344C 3441 3420 
+       3420 3420 3420 
+       3420 3420 3420 
+       3420 3420 3420 
+       3420 
+                      00053                                         CONFIGURACION                           ;NOS DEJA EN EL BANCO 1
+                          M                 
+0056   1683               M INICIALIZA:                     BSF                     STATUS,RP0
+0057   1703               M                                         BSF                     STATUS,RP1              ;ACCEDIENDO AL B
+                            ANCO 3
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0058   0188               M                                         CLRF            ANSEL
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0059   0189               M                                         CLRF            ANSELH                  ;TODOS LOS PINES DIGITAL
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            ES
+                          M                         
+005A   1303               M                                         BCF                     STATUS,RP1
+005B   1683               M                                         BSF                     STATUS,RP0              ;ACCEDIENDO AL B
+                            ANCO 1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005C   0185               M                                         CLRF            TRISA                   ;PUERTO A COMO ENTRADA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005D   0186               M                                         CLRF            TRISB                   ;PUERTO B COMO SALIDA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005E   0187               M                                         CLRF            TRISC                   ;PUERTO C COMO ENTRADA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005F   0188               M                                         CLRF            TRISD                   ;PUERTO D COMO SALIDA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0060   0189               M                                         CLRF            TRISE                   ;PUERTO E COMO ENTRADA
+                          M                         
+                          M 
+0061   1283               M                                         BCF                     STATUS,RP0              
+0062   1303               M                                         BCF                     STATUS,RP1              ;ACCEDIENDO AL B
+                            ANCO 0
+0063   0185               M                                         CLRF            PORTA                   ;LIMPIAR EL PUERTO A
+0064   0186               M                                         CLRF            PORTB                   ;LIMPIAR EL PUERTO B
+0065   0187               M                                         CLRF            PORTC                   ;LIMPIAR EL PUERTO C
+0066   0188               M                                         CLRF            PORTD                   ;LIMPIAR EL PUERTO D
+0067   0189               M                                         CLRF            PORTE                   ;LIMPIAR EL PUERTO E
+                          M                 
+0068   1303               M                                         BCF                     STATUS,RP1
+0069   1683               M                                         BSF                     STATUS,RP0              ;ACCEDIENDO AL B
+                            ANCO 1
+                      00054 ;-----------------------CODIGO PRINCIPAL------------------------------
+                      00055 ;ETIQUETAS                      |NEMONICOS              | OPERANDOS             | COMENTARIOS   
+                      00056                                                                         
+006A   30F0           00057                                         MOVLW                   0XF0
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+006B   0086           00058                                         MOVWF                   TRISB
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+006C   0187           00059                                         CLRF                    TRISC
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+006D   0188           00060                                         CLRF                    TRISD
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+006E   1005           00061                                         BCF                             TRISA,0
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+006F   1085           00062                                         BCF                             TRISA,1
+0070   30FF           00063                                         MOVLW                   0XFF
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0071   0095           00064                                         MOVWF                   WPUB                            ;HABILIT
+                            ANDO RESITENCIAS DE PULL UP PUERTO B
+                      00065 
+                      00066 ;***********************CONFIGURACION ADC*************************************************
+0072   1683           00067                                         BSF                             STATUS,RP0
+0073   1703           00068                                         BSF                             STATUS,RP1                      
+                            ;ACCEDIENDO AL BANCO 3
+                      00069                                         
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0074   3088           00070                                         MOVLW                   B'10001000'                     ;ENTRADA
+                             AN POR AN7 Y VREF+ POR AN3
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0075   0088           00071                                         MOVWF                   ANSEL                           ;CONFIGU
+                            RAR ENTRADAS ANALOGICAS
+                      00072                                         
+0076   1303           00073                                         BCF                             STATUS,RP1
+0077   1683           00074                                         BSF                             STATUS,RP0                      
+                            ;ACCEDIENDO AL BANCO 1
+                      00075 
+0078   3010           00076                                         MOVLW                   B'00010000'                     ;JUSTIFI
+                            CADO A LA IZQUIERDA, VREF- VSS(GND), VREF+ PIN (AN3)
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0079   009F           00077                                         MOVWF                   ADCON1                                  
+                      00078 
+007A   1283           00079                                         BCF                             STATUS,RP0                      
+                            ;BANCO 0
+007B   30DD           00080                                         MOVLW                   B'11011101'                     ;ADC CLO
+                            CK INTERNO RC, CANAL AN7, CONVERSION DESACTIVADA, HABILITAR ADC                                 
+007C   009F           00081                                         MOVWF                   ADCON0  
+                      00082 
+                      00083 ;************FUNCIONES DE LA LCD***************************                             
+007D   21AF           00084                                         CALL                    INIT_LCD                        ;INICIAR
+                             LA LCD
+                      00085                                         FILA1_POSICION  .0                                      ;POSICIO
+                            N DE LA FILA 1
+007E   3000               M                                         MOVLW                   .0                                      
+                                    ;POSICIONARSE EN LA SEGUNDA FILA
+007F   21D8               M                                         CALL                    DIRECCION_DDRAM
+0080   2206           00086                                         CALL                    MENSAJE_FILA1           ;MENSAJE FILA 1
+                      00087                                         FILA2_POSICION  .0                                      ;POSICIO
+                            N DE LA FILA 2
+0081   3040               M                                         MOVLW                   0X40+.0                                 
+                                    ;POSICIONARSE EN LA SEGUNDA FILA
+0082   21D8               M                                         CALL                    DIRECCION_DDRAM
+0083   2210           00088                                         CALL                    MENSAJE_FILA2           ;MENSAJE FILA 2
+                      00089 
+                      00090                                         
+                      00091 ;************CONFIGURACION INTERRUPCION IOC***************************************
+                      00092                                         
+0084   1683           00093                                         BSF                             STATUS,RP0                      
+                            ;BANCO 1
+0085   3055           00094                                         MOVLW                   B'01010101'                     ;RESISTE
+                            NCIAS PULL UP PUERTO B, RB0 INT, FLACOS DE SUBIDA,TEMPORIZADOR, PRES=64
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0086   0081           00095                                         MOVWF                   OPTION_REG
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0087   0996           00096                                         COMF                    IOCB,F
+0088   1283           00097                                         BCF                             STATUS,RP0                      
+                            ;BANCO 0
+                      00098                                         
+                      00099                                         
+0089   01A8           00100                                         CLRF                    CONT_T0
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+008A   3083           00101                                         MOVLW                   .131                            ;TIMER C
+                            UENTA A 125 X 64 PREE = 8000
+008B   0081           00102                                         MOVWF                   TMR0
+                      00103                                         
+008C   303E           00104                                         MOVLW                   .62
+008D   00A3           00105                                         MOVWF                   CONT5
+                      00106 
+008E   0806           00107                                         MOVF                    PORTB,W                         ;LEER EL
+                             VALOR DEL PUERTO B, CONDICION DE LAS INTERRUPCIONES IOC
+008F   110B           00108                                         BCF                             INTCON,T0IF                     
+                            ;LIMPIAR BANDERA DE INTERRUPCION
+0090   168B           00109                                         BSF                             INTCON,T0IE                     
+                            ;HABILITAR INTERRUPCION EXTERNA
+0091   100B           00110                                         BCF                             INTCON,RBIF                     
+                            ;LIMPIAR BANDERA DE     IOC
+0092   158B           00111                                         BSF                             INTCON,RBIE                     
+                            ;HABILITAR INTERRUPCION IOC
+0093   178B           00112                                         BSF                             INTCON,GIE                      
+                            ;HABILITAR INTERRUPCIONES GLOBALES
+                      00113 
+                      00114 ;*******************************************************************************************************
+                            ******
+0094   01A1           00115 LIMPIA_DEC:                     CLRF                    DECENA                          ;LIMPIAMOS LA VA
+                            RIABLE DECENA (0X21)                    
+0095   01A0           00116 LIMPIA_UNI:                     CLRF                    UNIDAD                          ;LIMPIAMOS LA VA
+                            RIABLE UNIDAD (0X20)
+                      00117 
+                      00118                         
+0096   303C           00119 RECARGA60:                      MOVLW                   .60
+0097   00A2           00120                                         MOVWF                   CONT60                          ;CARGARM
+                            OS LA VARIABLE CONT60 CON .60
+                      00121 
+0098   0820           00122 VISUALIZAR:                     MOVF                    UNIDAD,W                        ;LEEMOS LA VARIA
+                            BLE UNIDAD Y LO ALMACENAMOS EN W
+0099   201F           00123                                         CALL                    SIETE_SEG                       ;LLAMAMO
+                            S A LA RUTINA 7 SEG
+009A   0088           00124                                         MOVWF                   PORTD                           ;VISUALI
+                            ZAMOS LA UNIDAD POR EL PUERTO D
+                      00125 
+009B   1405           00126                                         UNIDAD_ENA                                                      
+                            ;ENCENDER UNIDADES DISPLAY(ENCENDER TRANSITOR RA0)
+009C   2165           00127                                         CALL                    RETARDO_8mS
+009D   1005           00128                                         UNIDAD_DIS                                                      
+                            ;ENCENDER UNIDADES DISPLAY(APAGAR TRANSITOR RA0)
+                      00129 
+009E   0821           00130                                         MOVF                    DECENA,W                        ;LEEMOS 
+                            LA VARIABLE UNIDAD Y LO ALMACENAMOS EN W
+009F   201F           00131                                         CALL                    SIETE_SEG                       ;LLAMAMO
+                            S A LA RUTINA 7 SEG
+00A0   0088           00132                                         MOVWF                   PORTD                           ;VISUALI
+                            ZAMOS LA DECENA POR EL PUERTO D
+                      00133 
+00A1   1485           00134                                         DECENA_ENA                                                      
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            ;ENCENDER DECENAS DISPLAY(ENCENDER TRANSITOR RA1)
+00A2   2165           00135                                         CALL                    RETARDO_8mS
+00A3   1085           00136                                         DECENA_DIS                                                      
+                            ;APAGAR DECENAS DISPLAY(APAGAR TRANSITOR RA1)
+                      00137                         
+00A4   0BA2           00138                                         DECFSZ                  CONT60,F                        ;BUCLE P
+                            ARA REPETIR 60 VECES LA VISUALIZACION DE LOS DIGITOS
+00A5   2898           00139                                         GOTO                    VISUALIZAR                      
+                      00140                 
+00A6   0AA0           00141                                         INCF                    UNIDAD,F                        ;INCREME
+                            NTAR LA VARIABLE UNIDAD
+00A7   3009           00142                                         MOVLW                   0X09                    
+00A8   0620           00143                                         XORWF                   UNIDAD,W                
+00A9   1D03           00144                                         BTFSS                   STATUS,Z                        ;UNIDAD 
+                            == 9?
+00AA   2896           00145                                         GOTO                    RECARGA60                       ;NO, VE 
+                            A REPETIR HASTA QUE SE CUMPLAN LOS 60 SIGLOS
+00AB   0AA1           00146                                         INCF                    DECENA,F                        ;SI, INC
+                            REMENTA DECENA EN UNA UNIDAD, Y LIMPIA UNIDADES
+00AC   3009           00147                                         MOVLW                   0X09
+00AD   0621           00148                                         XORWF                   DECENA,W
+00AE   1D03           00149                                         BTFSS                   STATUS,Z                        ;DECENA 
+                            == 9?
+00AF   2895           00150                                         GOTO                    LIMPIA_UNI                      ;NO, VE 
+                            A LIMPIAR UNIDADES, PERO MANTENER LAS DECENAS 
+00B0   2894           00151                                         GOTO                    LIMPIA_DEC                      ;SI, VE 
+                            Y LIMPIA UNIDADES Y DECENAS
+                      00152                                         
+                      00153 ;*************************************************************************
+                      00154                                         
+                      00155 ;------------------SERVICIO DE RUTINA DE INTERRUPCION-----------------
+00B1                  00156 ISR:                            
+00B1   1D0B           00157                                         BTFSS                   INTCON,T0IF
+00B2   28F6           00158                                         GOTO                    INT_ON_CHANGE
+                      00159 
+                      00160 ;**************************INTERRUPCION TMR0*******************************
+00B3   0BA3           00161                                         DECFSZ                  CONT5,F
+00B4   28F2           00162                                         GOTO            CLR_FLAG
+                      00163                                         
+00B5   149F           00164                                         BSF                             ADCON0,1                ;INICIA 
+                            LA CONVERSION ADC
+                      00165                                                                                 
+                      00166 
+00B6   303E           00167                                         MOVLW                   .62
+00B7   00A3           00168                                         MOVWF                   CONT5
+                      00169                                         
+00B8   0AA8           00170                                         INCF                    CONT_T0,F
+00B9   0828           00171                                         MOVF                    CONT_T0,W
+00BA   00B0           00172                                         MOVWF                   NUMERO
+00BB   213C           00173                                         CALL                    BIN_A_DECIMAL
+                      00174                                 
+                      00175 
+                      00176 ;**************************IMPRIMIMOS CARACTERES EN EL LCD**********************************************
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            *****                                           
+                      00177                                         FILA1_POSICION  .1                                      ;UBICAMO
+                            S EL CURSOR EN LA FILA 2 COLUMNA 14
+00BC   3001               M                                         MOVLW                   .1                                      
+                                    ;POSICIONARSE EN LA SEGUNDA FILA
+00BD   21D8               M                                         CALL                    DIRECCION_DDRAM
+00BE   2156           00178                                         CALL                    IMPRIME_DECIMAL 
+                      00179 
+00BF   189F           00180                                         BTFSC                   ADCON0,1                        ;YA TERM
+                            INO LA CONVESION ADC?
+00C0   28BF           00181                                         GOTO                    $-1
+00C1   081E           00182                                         MOVF                    ADRESH,W
+00C2   00B0           00183                                         MOVWF                   NUMERO
+00C3   213C           00184                                         CALL                    BIN_A_DECIMAL
+                      00185                                         FILA1_POSICION  .7                                      ;UBICAMO
+                            S EL CURSOR EN LA FILA 2 COLUMNA 14                             
+00C4   3007               M                                         MOVLW                   .7                                      
+                                    ;POSICIONARSE EN LA SEGUNDA FILA
+00C5   21D8               M                                         CALL                    DIRECCION_DDRAM
+00C6   2156           00186                                         CALL                    IMPRIME_DECIMAL         ;IMPRIME EL RESU
+                            LTADO DEL ADC
+00C7   1683           00187                                         BSF                     STATUS,RP0                      ;BANCO 1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00C8   081E           00188                                         MOVF                    ADRESL,W                        ;PARTE B
+                            AJA DEL REGISTRO ADC
+00C9   1283           00189                                         BCF                             STATUS,RP0                      
+                            ;BANCO 0
+00CA   00B1           00190                                         MOVWF                   ADL                                     
+                            ;MOVER LA PARTE BAJA DEL REGISTRO ADC A LA RAM , REGITRA ADL
+00CB   0103           00191                                         CLRW                                                            
+                            ;LIMPIAR EL ACUMULADOR W
+00CC   0631           00192                                         XORWF                   ADL,W                           
+00CD   1D03           00193                                         BTFSS                   STATUS,Z                        ;CASO 00
+00CE   28D6           00194                                         GOTO                    FUE01
+00CF   3030           00195                                         MOVLW                   '0'
+00D0   21DA           00196                                         CALL                    IMPRIME_CARACTER        
+00D1   302E           00197                                         MOVLW                   '.'
+00D2   21DA           00198                                         CALL                    IMPRIME_CARACTER        
+00D3   3030           00199                                         MOVLW                   '0'
+00D4   21DA           00200                                         CALL                    IMPRIME_CARACTER
+Error[108]  : Illegal character (:)
+00D5   2800           00201                                         GOTO                    CLR_FLAG:
+                      00202 
+00D6   3040           00203 FUE01:                          MOVLW                   B'01000000'                     ;CASO 01
+00D7   0631           00204                                         XORWF                   ADL,W
+00D8   1D03           00205                                         BTFSS                   STATUS,Z
+00D9   28E1           00206                                         GOTO                    FUE10
+00DA   3032           00207                                         MOVLW                   '2'
+00DB   21DA           00208                                         CALL                    IMPRIME_CARACTER        
+00DC   302E           00209                                         MOVLW                   '.'
+00DD   21DA           00210                                         CALL                    IMPRIME_CARACTER        
+00DE   3035           00211                                         MOVLW                   '5'
+00DF   21DA           00212                                         CALL                    IMPRIME_CARACTER                
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+Error[108]  : Illegal character (:)
+00E0   2800           00213                                         GOTO                    CLR_FLAG:
+                      00214         
+00E1   3080           00215 FUE10:                          MOVLW                   B'10000000'                     ;CASO 10
+00E2   0631           00216                                         XORWF                   ADL,W
+00E3   1D03           00217                                         BTFSS                   STATUS,Z
+00E4   28EC           00218                                         GOTO                    FUE011
+00E5   3035           00219                                         MOVLW                   '5'
+00E6   21DA           00220                                         CALL                    IMPRIME_CARACTER        
+00E7   302E           00221                                         MOVLW                   '.'
+00E8   21DA           00222                                         CALL                    IMPRIME_CARACTER        
+00E9   3030           00223                                         MOVLW                   '0'
+00EA   21DA           00224                                         CALL                    IMPRIME_CARACTER                
+Error[108]  : Illegal character (:)
+00EB   2800           00225                                         GOTO                    CLR_FLAG:       
+                      00226 
+00EC   3037           00227 FUE011:                         MOVLW                   '7'                                     ;CASO 11
+00ED   21DA           00228                                         CALL                    IMPRIME_CARACTER        
+00EE   302E           00229                                         MOVLW                   '.'
+00EF   21DA           00230                                         CALL                    IMPRIME_CARACTER        
+00F0   3035           00231                                         MOVLW                   '5'
+00F1   21DA           00232                                         CALL                    IMPRIME_CARACTER        
+                      00233 
+00F2   3083           00234 CLR_FLAG:                       MOVLW                   .131
+00F3   0081           00235                                         MOVWF                   TMR0
+00F4   110B           00236                                         BCF                             INTCON,T0IF                     
+                            ;LIMPIAMOS LA BANDERA DE INTERRUPCION INT_EXT   
+00F5   2923           00237                                         GOTO                    FIN_INT
+                      00238 
+                      00239                                         
+                      00240 ;**************************INTERRUPCION ON CHANGE*******************************                        
+                                    
+00F6   0185           00241 INT_ON_CHANGE:          CLRF                    PORTA
+00F7   215D           00242                                         CALL                    SUBT25MS                        ;RUTINA 
+                            ANTIREBOTE
+00F8   30F0           00243                                         MOVLW                   0XF0
+00F9   0506           00244                                         ANDWF                   PORTB,W                 
+00FA   00AE           00245                                         MOVWF                   TECLADO4X4
+                      00246                                 
+00FB   1283           00247                                         BCF                             STATUS,RP0                      
+                            ;B1
+00FC   300F           00248                                         MOVLW                   0X0F
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00FD   0086           00249                                         MOVWF                   TRISB
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+00FE   1381           00250                                         BCF                             OPTION_REG,7            ;DESACTI
+                            VAR PULL UP PUERTO B
+00FF   1283           00251                                         BCF                             STATUS,RP0                      
+                            ;B0
+0100   0186           00252                                         CLRF                    PORTB
+                      00253 
+0101   300F           00254                                         MOVLW                   0X0F
+0102   0506           00255                                         ANDWF                   PORTB,W
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 13
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0103   07AE           00256                                         ADDWF                   TECLADO4X4,F            ;VALORES CONCATE
+                            NADOS PARA BUSCAR EN LA TABLA
+                      00257                                         
+0104   01AF           00258                                         CLRF                    CONT_TECL
+                      00259 
+0105   082F           00260 BUSCA_TECLA:            MOVF                    CONT_TECL,W
+0106   216B           00261                                         CALL                    TABLA_TECL
+0107   062E           00262                                         XORWF                   TECLADO4X4,W
+0108   1903           00263                                         BTFSC                   STATUS,Z
+0109   2912           00264                                         GOTO                    IMPRIME_TECLA
+                      00265 
+010A   0AAF           00266                                         INCF                    CONT_TECL,F
+010B   3010           00267                                         MOVLW                   .16
+010C   062F           00268                                         XORWF                   CONT_TECL,W
+010D   1D03           00269                                         BTFSS                   STATUS,Z
+010E   2905           00270                                         GOTO                    BUSCA_TECLA
+010F   3010           00271                                         MOVLW                   .16
+0110   00AF           00272                                         MOVWF                   CONT_TECL
+0111   215D           00273                                         CALL                    SUBT25MS
+                      00274                                                 
+                      00275 IMPRIME_TECLA:          FILA2_POSICION  .14                                     ;UBICAMOS EL CURSOR EN L
+                            A FILA 2 COLUMNA 14
+0112   304E               M                                         MOVLW                   0X40+.14                                
+                                    ;POSICIONARSE EN LA SEGUNDA FILA
+0113   21D8               M                                         CALL                    DIRECCION_DDRAM
+                      00276                                         
+                      00277                                                 
+                      00278                                                                 
+0114   082F           00279                                         MOVF                    CONT_TECL,W
+0115   217C           00280                                         CALL                    TABLA_HEX_ASCII
+                      00281                                                                                 
+0116   21DA           00282                                         CALL                    IMPRIME_CARACTER
+                      00283                                 
+                      00284 
+0117   300F           00285                                         MOVLW                   0XF
+0118   0606           00286                                         XORWF                   PORTB,W
+0119   1D03           00287                                         BTFSS                   STATUS,Z
+011A   2917           00288                                         GOTO                    $-3
+                      00289 
+                      00290                                 ;       MOVF                    PORTB,W
+                      00291                                 ;       BCF                             INTCON,RBIF                     
+                            ;LIMPIAR BANDERA DE     IOC
+                      00292                                 ;       BTFSS                   INTCON,RBIF
+                      00293                                 ;       GOTO                    $-1
+                      00294                                         
+011B   215D           00295                                         CALL                    SUBT25MS
+011C   1683           00296                                         BSF                             STATUS,RP0                      
+                            ;B1
+011D   30F0           00297                                         MOVLW                   0XF0
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+011E   0086           00298                                         MOVWF                   TRISB
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+011F   1381           00299                                         BCF                             OPTION_REG,7
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 14
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0120   1283           00300                                         BCF                             STATUS,RP0
+                      00301                                         
+0121   0806           00302                                         MOVF                    PORTB,W
+0122   100B           00303                                         BCF                             INTCON,RBIF                     
+                            ;LIMPIAR BANDERA DE     IOC
+                      00304 
+                      00305 FIN_INT:                        RESTORE_REG                                                     ;RESTAUR
+                            AMOS LOS REGISTROS DE INTERES
+0123   0875               M                         MOVF                    0X75,W
+0124   00E0               M                         MOVWF                   0X60
+0125   0876               M                         MOVF                    0X76,W
+0126   00E1               M                         MOVWF                   0X61
+0127   0877               M                         MOVF                    0X77,W
+0128   00E2               M                         MOVWF                   0X62
+0129   0878               M                         MOVF                    0X78,W
+012A   00E3               M                         MOVWF                   0X63
+012B   0878               M                         MOVF                    0X78,W
+012C   00E4               M                         MOVWF                   0X64
+012D   087A               M                         MOVF                    0X7A,W
+012E   00E5               M                         MOVWF                   0X65
+012F   087B               M                         MOVF                    0X7B,W
+0130   00E6               M                         MOVWF                   0X66
+0131   087C               M                         MOVF                    0X7C,W
+0132   00E7               M                         MOVWF                   0X67
+0133   087D               M                         MOVF                    0X7D,W
+0134   00E8               M                         MOVWF                   0X68
+0135   0872               M                         MOVF                    SAVE_PC,W
+0136   008A               M                         MOVWF                   PCLATH
+0137   0E71               M                         SWAPF                   SAVE_STATUS,W
+0138   0083               M                         MOVWF                   STATUS
+0139   0EF0               M                         SWAPF                   SAVE_W,F
+013A   0E70               M                         SWAPF                   SAVE_W,W
+013B   0009           00306                                         RETFIE                                                          
+                            ;REGRESAMOS DE LA INTERRUPCION
+                      00307                                         
+                      00308 ;-------------------------SUBRUTINAS----------------------------------
+                      00309 
+013C   01A5           00310 BIN_A_DECIMAL:          CLRF                    UNIDADES
+013D   01A6           00311                                         CLRF                    DECENAS
+013E   01A7           00312                                         CLRF                    CENTENAS
+                      00313 
+                      00314 ;************************EXTRAER CENTENAS*********************************
+013F   3064           00315 RESTA100:                       MOVLW                   .100
+0140   02B0           00316                                         SUBWF                   NUMERO,F
+0141   1C03           00317                                         BTFSS                   STATUS,C
+0142   2945           00318                                         GOTO                    SUMA100
+0143   0AA7           00319                                         INCF                    CENTENAS,F
+0144   293F           00320                                         GOTO                    RESTA100
+0145   3064           00321 SUMA100:                        MOVLW                   .100
+0146   07B0           00322                                         ADDWF                   NUMERO,F
+                      00323 
+                      00324 ;******************EXTRAER DECENAS*********************************
+0147   300A           00325 RESTA10:                        MOVLW                   .10
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 15
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0148   02B0           00326                                         SUBWF                   NUMERO,F
+0149   1C03           00327                                         BTFSS                   STATUS,C
+014A   294D           00328                                         GOTO                    SUMA10
+014B   0AA6           00329                                         INCF                    DECENAS,F
+014C   2947           00330                                         GOTO                    RESTA10
+014D   300A           00331 SUMA10:                         MOVLW                   .10
+014E   07B0           00332                                         ADDWF                   NUMERO,F
+                      00333 
+                      00334 ;******************EXTRAER UNIDADES********************************************************
+014F   0830           00335                                         MOVF                    NUMERO,W
+0150   00A5           00336                                         MOVWF                   UNIDADES
+                      00337 
+                      00338                                                                 
+                      00339 ;***************DE BCD A DECIMAL USANDO CARACTERES ASCII*****************               
+0151   3030           00340                                         MOVLW                   0X30                            ;EN CODI
+                            GO ASCII LOS NUMERO EMPIEZAN DESDE LA POSICION 0X30
+0152   07A5           00341                                         ADDWF                   UNIDADES,F
+0153   07A6           00342                                         ADDWF                   DECENAS,F
+0154   07A7           00343                                         ADDWF                   CENTENAS,F
+0155   0008           00344                                         RETURN
+                      00345 
+0156   0827           00346 IMPRIME_DECIMAL:        MOVF                    CENTENAS,W
+0157   21DA           00347                                         CALL                    IMPRIME_CARACTER        ;ESCRIBE CARACTE
+                            R DE CENTENAS EN LA POSICION 14
+0158   0826           00348                                         MOVF                    DECENAS,W                               
+                                            
+0159   21DA           00349                                         CALL                    IMPRIME_CARACTER        ;ESCRIBE CARACTE
+                            R DE DECENAS EN LA POSICION 15
+015A   0825           00350                                         MOVF                    UNIDADES,W
+015B   21DA           00351                                         CALL                    IMPRIME_CARACTER        ;ESCRIBE CARACTE
+                            R DE UNIDADES EN LA POSICION 16
+015C   0008           00352                                         RETURN
+                      00353 
+                      00354 
+                      00355 SUBT25MS:                       RETARDO_3V              .3,.47,.25
+015D   3003               M                 MOVLW           .3                              ;VAR1
+015E   00E4               M                 MOVWF           0X64
+015F   302F               M                 MOVLW           .47                             ;VAR2
+0160   00E5               M                 MOVWF           0X65                    
+0161   3019               M                 MOVLW           .25                             ;VAR3
+0162   0099               M                 MOVWF           .25
+0163   21A0               M                 CALL            ST3V
+0164   0008           00356                                         RETURN
+                      00357 
+                      00358 RETARDO_8mS:            RETARDO_2V              .6,.181                 ;RETARDO DE 8mS PARA LA PERSISTE
+                            NCIA DE LA VISION
+0165   3006               M                 MOVLW           .6
+0166   00E1               M                 MOVWF           0X61
+0167   30B5               M                 MOVLW           .181
+0168   00E2               M                 MOVWF           0X62
+0169   2195               M                 CALL            ST2V
+016A   0008           00359                                         RETURN
+                      00360 ;---------------------------TABLAS------------------------------------
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 16
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+016B   0782           00361 TABLA_TECL                      ADDWF                   PCL,F
+016C   34EE 34DE 34BE 00362                                         DT                              0XEE,0XDE,0XBE,0X7E,0XED,0XDD, 0
+                            XBD, 0X7D,0XEB,0XDB,0XBB,0X7B,0XE7,0XD7,0XB7,0X77
+       347E 34ED 34DD 
+       34BD 347D 34EB 
+       34DB 34BB 347B 
+       34E7 34D7 34B7 
+       3477 
+                      00363 
+017C   0782           00364 TABLA_HEX_ASCII         ADDWF                   PCL,F
+017D   3430 3431 3432 00365                                         DT                              "0123456789ABCDEF@"
+       3433 3434 3435 
+       3436 3437 3438 
+       3439 3441 3442 
+       3443 3444 3445 
+       3446 3440 
+                      00366 ;---------------------------LIBRERIAS--------------------------------
+                      00367                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm>
+                      00001 ;                       MOVLW           .                       ;VAR2
+                      00002 ;                       MOVWF           0X61
+                      00003 ;                       MOVLW           .                       ;VAR1
+                      00004 ;                       MOVWF           0X62
+                      00005 ;                       CALL            ST2V
+                      00006 ;                       RETURN
+                      00007 ;;---------------------------------------------------------
+                      00008 ;                       MOVLW           .                       ;VAR1
+                      00009 ;                       MOVWF           0X64
+                      00010 ;                       MOVLW           .                       ;VAR2
+                      00011 ;                       MOVWF           0X65            
+                      00012 ;                       MOVLW           .                       ;VAR3
+                      00013 ;                       MOVWF           0X66
+                      00014 ;                       CALL            ST3V
+                      00015 
+                      00016 ;SUBT25MS:              SUBT3V          .3,.47,.25   ;RETARDO DE 25mS PARA EL USO DE LA FUNCION ANTIREBO
+                            TES     
+                      00017 
+                      00018 ;--------------------RUTINA DE TIEMPO 1 VAR---------------
+                      00019 
+018E   0000           00020 ST1V:                   NOP
+018F   0000           00021                         NOP
+0190   0000           00022                         NOP 
+0191   0000           00023                         NOP
+0192   0BE0           00024                         DECFSZ          0X60,F
+0193   298E           00025                         GOTO            ST1V
+0194   0008           00026                         RETURN
+                      00027 
+                      00028                         
+                      00029 ;SUBRUTINA DE TIEMPO DE 2 VARIABLES
+0195   0862           00030 ST2V:                   MOVF            0X62,W
+0196   00E3           00031                         MOVWF           0X63
+0197   0000           00032 DECRE2V:                NOP
+0198   0000           00033                         NOP
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 17
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0199   0000           00034                         NOP
+019A   0000           00035                         NOP
+019B   0BE3           00036                         DECFSZ          0X63,F
+019C   2997           00037                         GOTO            DECRE2V
+019D   0BE1           00038                         DECFSZ          0X61,F
+019E   2995           00039                         GOTO            ST2V
+019F   0008           00040                         RETURN
+                      00041 
+                      00042                         
+                      00043 ;SUBRUTINA DE TIEMPO DE 3 VARIABLES
+01A0   0866           00044 ST3V:                   MOVF            0X66,W
+01A1   00E7           00045                         MOVWF           0X67
+01A2   0865           00046 RECARGA3V:              MOVF            0X65,W
+01A3   00E8           00047                         MOVWF           0X68
+01A4   0000           00048 DECRE3V:                NOP
+01A5   0000           00049                         NOP
+01A6   0000           00050                         NOP
+01A7   0000           00051                         NOP
+01A8   0BE8           00052                         DECFSZ          0X68,F
+01A9   29A4           00053                         GOTO            DECRE3V
+01AA   0BE7           00054                         DECFSZ          0X67,F
+01AB   29A2           00055                         GOTO            RECARGA3V
+01AC   0BE4           00056                         DECFSZ          0X64,F
+01AD   29A0           00057                         GOTO            ST3V
+01AE   0008           00058                         RETURN
+                      00059 
+                      00368                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm>          
+                      00001 ;--------------------------SUBRUTINAS--------------------------------
+                      00002 ;PUERTO EQU PORTB
+                      00003 ;PUERTO EQU PORTC
+  00000007            00004 PUERTO   EQU    PORTC
+                      00005 ;---------------------------DEFINE-----------------------------------
+                      00006 #DEFINE         RS_0    BCF             PUERTO,4
+                      00007 #DEFINE         RS_1    BSF             PUERTO,4
+                      00008 #DEFINE         E_0             BCF             PUERTO,5
+                      00009 #DEFINE         E_1             BSF             PUERTO,5
+                      00010 
+                      00011 INIT_LCD:                       RETARDO_2V              .61,.232                        ;100mS
+01AF   303D               M                 MOVLW           .61
+01B0   00E1               M                 MOVWF           0X61
+01B1   30E8               M                 MOVLW           .232
+01B2   00E2               M                 MOVWF           0X62
+01B3   2195               M                 CALL            ST2V
+01B4   21F0           00012                                         CALL                    MINISALUDO
+01B5   21F0           00013                                         CALL                    MINISALUDO
+01B6   21F0           00014                                         CALL                    MINISALUDO
+01B7   3002           00015                                         MOVLW                   B'00000010'
+01B8   0087           00016                                         MOVWF                   PUERTO
+01B9   21F9           00017                                         CALL                    ACTIVA_E
+01BA   21C0           00018                                         CALL                    FUNCTION_SET
+01BB   21C2           00019                                         CALL                    LCD_OFF
+01BC   21C4           00020                                         CALL                    LIMPIA_LCD
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 18
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01BD   21C6           00021                                         CALL                    ENTRY_MODE
+01BE   21C8           00022                                         CALL                    LCD_ON  
+01BF   0008           00023                                         RETURN                                                          
+                      00024 
+01C0   3028           00025 FUNCTION_SET:           MOVLW                   B'00101000'                     ;4BITS, 2FILAS, 5X7 PIXE
+                            LS      
+01C1   29E6           00026                                         GOTO                    ESCRIBE_DATO
+                      00027 
+01C2   3008           00028 LCD_OFF:                        MOVLW                   B'00001000'                     
+01C3   29E6           00029                                         GOTO                    ESCRIBE_DATO
+                      00030 
+01C4   3001           00031 LIMPIA_LCD:                     MOVLW                   B'00000001'
+01C5   29E6           00032                                         GOTO                    ESCRIBE_DATO
+                      00033 
+01C6   3006           00034 ENTRY_MODE:                     MOVLW                   B'00000110'                     ;NO RECORRE INFO
+                            RMACION AL ESCRIBIR,APUNTADOR CON INCREMENTE
+01C7   29E6           00035                                         GOTO                    ESCRIBE_DATO
+                      00036 
+01C8   300C           00037 LCD_ON:                         MOVLW                   B'00001100'
+01C9   29E6           00038                                         GOTO                    ESCRIBE_DATO
+                      00039 
+01CA   300E           00040 LCD_ON_CURSOR:          MOVLW                   B'00001110'
+01CB   29E6           00041                                         GOTO                    ESCRIBE_DATO    
+                      00042 
+01CC   300F           00043 LCD_ON_CURS_BLINK:  MOVLW                       B'00001111'
+01CD   29E6           00044                                         GOTO                    ESCRIBE_DATO
+                      00045 
+01CE   3002           00046 HOME:                           MOVLW                   B'00000010'
+01CF   29E6           00047                                         GOTO                    ESCRIBE_DATO    
+                      00048 
+01D0   301C           00049 RECORRE_DER_LCD:        MOVLW                   B'00011100'
+01D1   29E6           00050                                         GOTO                    ESCRIBE_DATO    
+                      00051 
+01D2   3018           00052 RECORRE_IZQ_LCD:        MOVLW                   B'00011000'
+01D3   29E6           00053                                         GOTO                    ESCRIBE_DATO    
+                      00054 
+01D4   3014           00055 RECORRE_DER_CUR:        MOVLW                   B'00010100'
+01D5   29E6           00056                                         GOTO                    ESCRIBE_DATO    
+                      00057 
+01D6   3010           00058 RECORRE_IZQ_CUR:        MOVLW                   B'00010000'
+01D7   29E6           00059                                         GOTO                    ESCRIBE_DATO
+                      00060 
+01D8   3880           00061 DIRECCION_DDRAM:        IORLW                   B'10000000'
+01D9   29E6           00062                                         GOTO                    ESCRIBE_DATO
+                      00063         
+01DA   00AA           00064 IMPRIME_CARACTER:       MOVWF                   DATO
+01DB   0E2A           00065                                         SWAPF                   DATO,W
+01DC   390F           00066                                         ANDLW                   B'00001111'
+01DD   0087           00067                                         MOVWF                   PUERTO
+01DE   1607           00068                                         RS_1
+01DF   21F9           00069                                         CALL                    ACTIVA_E                        ;ENVIAR 
+                            LOS 4BITS MSB
+01E0   082A           00070                                         MOVF                    DATO,W
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 19
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+01E1   390F           00071                                         ANDLW                   B'00001111'
+01E2   0087           00072                                         MOVWF                   PUERTO
+01E3   1607           00073                                         RS_1
+01E4   21F9           00074                                         CALL                    ACTIVA_E                        ;ENVIAR 
+                            LOS 4BITS LSB
+01E5   0008           00075                                         RETURN 
+                      00076 
+01E6   00AA           00077 ESCRIBE_DATO:           MOVWF                   DATO
+01E7   0E2A           00078                                         SWAPF                   DATO,W
+01E8   390F           00079                                         ANDLW                   B'00001111'
+01E9   0087           00080                                         MOVWF                   PUERTO
+01EA   21F9           00081                                         CALL                    ACTIVA_E                        ;ENVIAR 
+                            LOS 4BITS MSB
+01EB   082A           00082                                         MOVF                    DATO,W
+01EC   390F           00083                                         ANDLW                   B'00001111'
+01ED   0087           00084                                         MOVWF                   PUERTO
+01EE   21F9           00085                                         CALL                    ACTIVA_E                        ;ENVIAR 
+                            LOS 4BITS LSB
+01EF   0008           00086                                         RETURN 
+                      00087 
+                      00088                                         
+01F0   3003           00089 MINISALUDO:                     MOVLW                   B'00000011'
+01F1   0087           00090                                         MOVWF                   PUERTO
+01F2   21F9           00091                                         CALL                    ACTIVA_E
+                      00092                                         RETARDO_2V              .4,.156                         ;5mS
+01F3   3004               M                 MOVLW           .4
+01F4   00E1               M                 MOVWF           0X61
+01F5   309C               M                 MOVLW           .156
+01F6   00E2               M                 MOVWF           0X62
+01F7   2195               M                 CALL            ST2V
+01F8   0008           00093                                         RETURN
+                      00094 
+01F9   1687           00095 ACTIVA_E:                       E_1
+01FA   0000           00096                                         NOP
+01FB   0000           00097                                         NOP
+01FC   0000           00098                                         NOP
+01FD   0000           00099                                         NOP
+01FE   0000           00100                                         NOP
+01FF   1287           00101                                         E_0
+                      00102                                         RETARDO_2V              .35,.8
+0200   3023               M                 MOVLW           .35
+0201   00E1               M                 MOVWF           0X61
+0202   3008               M                 MOVLW           .8
+0203   00E2               M                 MOVWF           0X62
+0204   2195               M                 CALL            ST2V
+0205   0008           00103                                         RETURN
+                      00104 
+                      00105 
+                      00106 
+                      00107 ;-------------------SUBRUTINA PARA ESCRIBIR MENSAJES----------------------------------------------------
+                            --------------------------------
+                      00108 
+                      00109                 
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 20
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0206   01A0           00110 MENSAJE_FILA1                           CLRF                    0X20
+0207   0820           00111 TABLA1:                         MOVF                    0X20,W
+0208   2030           00112                                         CALL                    LCD_FILA1
+0209   21DA           00113                                         CALL                    IMPRIME_CARACTER
+020A   0AA0           00114                                         INCF                    0X20,F
+020B   3010           00115                                         MOVLW                   .16
+020C   0620           00116                                         XORWF                   0X20,W
+020D   1D03           00117                                         BTFSS                   STATUS,Z
+020E   2A07           00118                                         GOTO                    TABLA1
+020F   0008           00119                                         RETURN                                  
+                      00120 
+                      00121 
+0210   01A0           00122 MENSAJE_FILA2                           CLRF                    0X20
+0211   0820           00123 TABLA2:                         MOVF                    0X20,W
+0212   2045           00124                                         CALL                    LCD_FILA2
+0213   21DA           00125                                         CALL                    IMPRIME_CARACTER
+0214   0AA0           00126                                         INCF                    0X20,F
+0215   3010           00127                                         MOVLW                   .16
+0216   0620           00128                                         XORWF                   0X20,W
+0217   1D03           00129                                         BTFSS                   STATUS,Z
+0218   2A11           00130                                         GOTO                    TABLA2
+0219   0008           00131                                         RETURN
+                      00132 
+                      00133 
+                      00134 
+                      00369                                         END
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 21
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ABDEN                             00000000
+ABDOVF                            00000007
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ACTIVA_E                          000001F9
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADL                               00000031
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ALEATORIO                         00000024
+ANS0                              00000000
+ANS1                              00000001
+ANS10                             00000002
+ANS11                             00000003
+ANS12                             00000004
+ANS13                             00000005
+ANS2                              00000002
+ANS3                              00000003
+ANS4                              00000004
+ANS5                              00000005
+ANS6                              00000006
+ANS7                              00000007
+ANS8                              00000000
+ANS9                              00000001
+ANSEL                             00000188
+ANSELH                            00000189
+BAUDCTL                           00000187
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BIN_A_DECIMAL                     0000013C
+BRG0                              00000000
+BRG1                              00000001
+BRG10                             00000002
+BRG11                             00000003
+BRG12                             00000004
+BRG13                             00000005
+BRG14                             00000006
+BRG15                             00000007
+BRG16                             00000003
+BRG2                              00000002
+BRG3                              00000003
+BRG4                              00000004
+BRG5                              00000005
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 22
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BRG6                              00000006
+BRG7                              00000007
+BRG8                              00000000
+BRG9                              00000001
+BRGH                              00000002
+BUSCA_TECLA                       00000105
+C                                 00000000
+C1CH0                             00000000
+C1CH1                             00000001
+C1IE                              00000005
+C1IF                              00000005
+C1OE                              00000005
+C1ON                              00000007
+C1OUT                             00000006
+C1POL                             00000004
+C1R                               00000002
+C1RSEL                            00000005
+C1SEN                             00000005
+C2CH0                             00000000
+C2CH1                             00000001
+C2IE                              00000006
+C2IF                              00000006
+C2OE                              00000005
+C2ON                              00000007
+C2OUT                             00000006
+C2POL                             00000004
+C2R                               00000002
+C2REN                             00000004
+C2RSEL                            00000004
+C2SYNC                            00000000
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 23
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CCPR2L                            0000001B
+CENTENAS                          00000027
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+CHS3                              00000005
+CKE                               00000006
+CKP                               00000004
+CLR_FLAG                          000000F2
+CM1CON0                           00000107
+CM2CON0                           00000108
+CM2CON1                           00000109
+CONFIGURACION                     
+CONT5                             00000023
+CONT60                            00000022
+CONT_T0                           00000028
+CONT_TECL                         0000002F
+CREN                              00000004
+CSRC                              00000007
+D                                 00000005
+DATA_ADDRESS                      00000005
+DATO                              0000002A
+DC                                00000001
+DC1B0                             00000004
+DC1B1                             00000005
+DC2B0                             00000004
+DC2B1                             00000005
+DECENA                            00000021
+DECENAS                           00000026
+DECENA_DIS                        BCF     PORTA,1
+DECENA_ENA                        BSF     PORTA,1
+DECIMAL                           00000029
+DECRE2V                           00000197
+DECRE3V                           000001A4
+DIRECCION_DDRAM                   000001D8
+D_A                               00000005
+D_NOT_A                           00000005
+ECCPAS                            0000009C
+ECCPAS0                           00000004
+ECCPAS1                           00000005
+ECCPAS2                           00000006
+ECCPASE                           00000007
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDAT                             0000010C
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+ENTRY_MODE                        000001C6
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 24
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ESCRIBE_DATO                      000001E6
+ESTADO_PB                         0000002C
+ES_NUEVO_PB                       0000002D
+E_0                               BCF             PUERTO,5
+E_1                               BSF             PUERTO,5
+F                                 00000001
+FERR                              00000002
+FILA1_POSICION                    
+FILA2_POSICION                    
+FIN_INT                           00000123
+FSR                               00000004
+FUE01                             000000D6
+FUE011                            000000EC
+FUE10                             000000E1
+FUNCTION_SET                      000001C0
+FVREN                             00000000
+GCEN                              00000007
+GIE                               00000007
+GO                                00000001
+GO_DONE                           00000001
+GO_NOT_DONE                       00000001
+HOME                              000001CE
+HTS                               00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+I2C_STOP                          00000004
+IMPRIME_CARACTER                  000001DA
+IMPRIME_DECIMAL                   00000156
+IMPRIME_TECLA                     00000112
+INDF                              00000000
+INICIALIZA                        00000056
+INIT_LCD                          000001AF
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+INT_ON_CHANGE                     000000F6
+IOCB                              00000096
+IOCB0                             00000000
+IOCB1                             00000001
+IOCB2                             00000002
+IOCB3                             00000003
+IOCB4                             00000004
+IOCB5                             00000005
+IOCB6                             00000006
+IOCB7                             00000007
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRP                               00000007
+ISR                               000000B1
+LCD_FILA1                         00000030
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 25
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+LCD_FILA2                         00000045
+LCD_OFF                           000001C2
+LCD_ON                            000001C8
+LCD_ON_CURSOR                     000001CA
+LCD_ON_CURS_BLINK                 000001CC
+LIMPIA_DEC                        00000094
+LIMPIA_LCD                        000001C4
+LIMPIA_UNI                        00000095
+LTS                               00000001
+MC1OUT                            00000007
+MC2OUT                            00000006
+MENSAJE_FILA1                     00000206
+MENSAJE_FILA2                     00000210
+MINISALUDO                        000001F0
+MSK                               00000093
+MSK0                              00000000
+MSK1                              00000001
+MSK2                              00000002
+MSK3                              00000003
+MSK4                              00000004
+MSK5                              00000005
+MSK6                              00000006
+MSK7                              00000007
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000001
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+NUMERO                            00000030
+OERR                              00000001
+OPTION_REG                        00000081
+OSCCON                            0000008F
+OSCTUNE                           00000090
+OSFIE                             00000007
+OSFIF                             00000007
+OSTS                              00000003
+P                                 00000004
+P1M0                              00000006
+P1M1                              00000007
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PDC0                              00000000
+PDC1                              00000001
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 26
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+PDC2                              00000002
+PDC3                              00000003
+PDC4                              00000004
+PDC5                              00000005
+PDC6                              00000006
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PRSEN                             00000007
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSSAC0                            00000002
+PSSAC1                            00000003
+PSSBD0                            00000000
+PSSBD1                            00000001
+PSTRCON                           0000009D
+PUERTO                            00000007
+PULSR                             00000002
+PULSS                             00000003
+PWM1CON                           0000009B
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 27
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIDL                             00000006
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+RE3                               00000003
+READ_WRITE                        00000002
+RECARGA3V                         000001A2
+RECARGA60                         00000096
+RECORRE_DER_CUR                   000001D4
+RECORRE_DER_LCD                   000001D0
+RECORRE_IZQ_CUR                   000001D6
+RECORRE_IZQ_LCD                   000001D2
+RESTA10                           00000147
+RESTA100                          0000013F
+RESTORE_REG                       
+RETARDO_1V                        
+RETARDO_2V                        
+RETARDO_3V                        
+RETARDO_8mS                       00000165
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RS_0                              BCF             PUERTO,4
+RS_1                              BSF             PUERTO,4
+RX9                               00000006
+RX9D                              00000000
+R_NOT_W                           00000002
+R_W                               00000002
+S                                 00000003
+SAVE_PC                           00000072
+SAVE_REG                          
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 28
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+SAVE_STATUS                       00000071
+SAVE_W                            00000070
+SBOREN                            00000004
+SCKP                              00000004
+SCS                               00000000
+SEN                               00000000
+SENDB                             00000003
+SIETE_SEG                         0000001F
+SIETE_SG_KC                       
+SMP                               00000007
+SPBRG                             00000099
+SPBRGH                            0000009A
+SPEN                              00000007
+SR0                               00000006
+SR1                               00000007
+SRCON                             00000185
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPMSK                            00000093
+SSPOV                             00000006
+SSPSTAT                           00000094
+ST1V                              0000018E
+ST2V                              00000195
+ST3V                              000001A0
+STATUS                            00000003
+STRA                              00000000
+STRB                              00000001
+STRC                              00000002
+STRD                              00000003
+STRSYNC                           00000004
+SUBT25MS                          0000015D
+SUMA10                            0000014D
+SUMA100                           00000145
+SWDTEN                            00000000
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+T1GINV                            00000007
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 29
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+T1GIV                             00000007
+T1GSS                             00000001
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TABLA1                            00000207
+TABLA2                            00000211
+TABLA_HEX_ASCII                   0000017C
+TABLA_LCD                         0000002F
+TABLA_TECL                        0000016B
+TECLADO4X4                        0000002E
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1GE                            00000006
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISA6                            00000006
+TRISA7                            00000007
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 30
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRISE3                            00000003
+TRMT                              00000001
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+ULPWUE                            00000005
+ULPWUIE                           00000002
+ULPWUIF                           00000002
+UNIDAD                            00000020
+UNIDADES                          00000025
+UNIDAD_DIS                        BCF     PORTA,0
+UNIDAD_ENA                        BSF     PORTA,0
+VCFG0                             00000004
+VCFG1                             00000005
+VECTOR_INTERRUPCION               
+VISUALIZAR                        00000098
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             00000097
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 31
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+VRSS                              00000004
+W                                 00000000
+WCOL                              00000007
+WDTCON                            00000105
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WPUB                              00000095
+WPUB0                             00000000
+WPUB1                             00000001
+WPUB2                             00000002
+WPUB3                             00000003
+WPUB4                             00000004
+WPUB5                             00000005
+WPUB6                             00000006
+WPUB7                             00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+WUE                               00000001
+Z                                 00000002
+_BOR21V                           00003EFF
+_BOR40V                           00003FFF
+_BOR4V_BOR21V                     00003EFF
+_BOR4V_BOR40V                     00003FFF
+_BOREN_NSLEEP                     00003EFF
+_BOREN_OFF                        00003CFF
+_BOREN_ON                         00003FFF
+_BOREN_SBODEN                     00003DFF
+_BOR_NSLEEP                       00003EFF
+_BOR_OFF                          00003CFF
+_BOR_ON                           00003FFF
+_BOR_SBODEN                       00003DFF
+_CONFIG1                          00002007
+_CONFIG2                          00002008
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003F7F
+_CP_OFF                           00003FFF
+_CP_ON                            00003FBF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         00001FFF
+_DEVID1                           00002006
+_EC_OSC                           00003FFB
+_EXTRC                            00003FFF
+_EXTRCIO                          00003FFE
+_EXTRC_OSC_CLKOUT                 00003FFF
+_EXTRC_OSC_NOCLKOUT               00003FFE
+_FCMEN_OFF                        000037FF
+_FCMEN_ON                         00003FFF
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 32
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_FOSC_EC                          00003FFB
+_FOSC_EXTRC_CLKOUT                00003FFF
+_FOSC_EXTRC_NOCLKOUT              00003FFE
+_FOSC_HS                          00003FFA
+_FOSC_INTRC_CLKOUT                00003FFD
+_FOSC_INTRC_NOCLKOUT              00003FFC
+_FOSC_LP                          00003FF8
+_FOSC_XT                          00003FF9
+_HS_OSC                           00003FFA
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_IESO_OFF                         00003BFF
+_IESO_ON                          00003FFF
+_INTOSC                           00003FFD
+_INTOSCIO                         00003FFC
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FF8
+_LVP_OFF                          00002FFF
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FEF
+_WDTE_OFF                         00003FF7
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FF7
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FF9
+__16F887                          00000001
+__DEBUG                           1
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0100 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+MPASM  5.51                     ADC_2,5MV.ASM   2-14-2022  16:45:15         PAGE 33
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+
+0140 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0180 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+01C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0200 : XXXXXXXXXXXXXXXX XXXXXXXXXX------ ---------------- ----------------
+2000 : -------XX------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   535
+Program Memory Words Free:  7657
+
+
+Errors   :     3
+Warnings :     3 reported,     0 suppressed
+Messages :    22 reported,     0 suppressed
+
+
