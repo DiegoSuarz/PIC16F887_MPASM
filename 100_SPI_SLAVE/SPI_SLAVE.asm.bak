@@ -1,5 +1,8 @@
 ;DESCRIPCION:
-;
+;EJEMPLO DE COMUNICACION SPI ENTRE 2 PICS: CODIGO DEL ESCLAVO
+;MODO DE RELOJ 1,1 -> CKP =1, CKE=0		, SS(SELEC SLAVE) ACTIVO
+;AL RECIBIR UN DATO POR SPI LO IMPRIME EN EL PUERTOD Y ENVIA
+;LA LECTURA DEL PUERTOB
 ;---------------------------MACROS----------------------------
 ;---------------------------DEFINE----------------------------
 ;----------------------------EQU------------------------------
@@ -23,11 +26,44 @@
 					CONFIGURACION				;NOS DEJA EN EL BANCO 1						
 ;-----------------------CODIGO PRINCIPAL------------------------------
 ;ETIQUETAS			|NEMONICOS		| OPERANDOS 		| COMENTARIOS	
+					CLRF			TRISD
+					MOVLW			B'1101111'          ;BC5->SDO, BC4->SDI,BC3->SCK,
+					MOVLW			TRISC
 					
-;*************************************************************************
-				
-;*************************************************************************
+;*********************************CONFIGURACION SPI**************************
+					CLRF			SSPSTAT
+					BCF				SSPSTAT,SMP			;EN SPI MODO ESCLAVO SIEMPRE EN 0			
+					BCF				SSPSTAT,CKE			;CKE=0,CKP = 1,TRANSMISION DE DATA EN EL FLANCO DE SUBIDA OF SCK
+					BCF				SSPSTAT,BF			;BANDERA QUE INDICA QUE LA TRANSMISION ESTA COMPLETA (0), 1->TRANSMISION EN PROGRESO
 					
+					BSF				PORTA,5				;ENTRADA PARA SELECT SLAVE
+					
+					BCF				STATUS,RP0			;BANCO 0
+					
+					CLRF			SSPCON
+					BSF				SSPCON,SSPEN		;HABILITAR PUERTO SERIAL SINCRONO MODO SPI		
+					BSF				SSPCON,CKP			;CKP = 1, CKE=0 ,TRANSMISION DE DATA EN EL FLANCO DE SUBIDA OF SCK
+		
+					BCF				SSPCON,SSPM0		;PUERTO SERIAL SINCRONO COMO SPI ESCLAVO, SS ACTIVADO				
+					BCF				SSPCON,SSPM1
+					BSF				SSPCON,SSPM2
+					BCF				SSPCON,SSPM3		
+
+;*************************************************************************
+					MOVLW			SSPSTAT				;DIRECCIONAMIENTO INDIRECTO
+					MOVWF			FSR					;LA ETIQUETA FSR SELECCIONA AUTOMATICAMENTE EL BANCO DONDE SE ENCUENTRA EL REGISTRO SSPSTAT
+					
+
+LOOP:				MOVF			PORTB,W
+					MOVWF			SSPBUF				;CARGAR EL BUFFER SPI CON EL VALOR DEL PUERTO B
+					BTFSS			INDF,BF				;DIRECCIONAMIENTO INDIRECTO DEL BIT DE BANDERA BUFFER SPI
+					GOTO 			$-1					;AUN NO SE PUSO A 1, VUELVE A PREGUNTAR POR LA BANDERA
+					MOVF			SSPBUF,W			;LEER EL BUFFER DEL SPI Y MOVER EL CONTENIDO AL ACUMULADOR W
+					MOVWF			PORTD				;MOVER EL CONTINIDO DEL BUFFER AL PUERTO D
+					GOTO 			LOOP
+
+
+
 ;------------------SERVICIO DE RUTINA DE INTERRUPCION-----------------
 ;ISR:				
 				

@@ -1,5 +1,9 @@
 ;DESCRIPCION:
-;
+;EJEMPLO DE COMUNICACIÓN SPI ENTRE 2 PICS: CODIGO DEL MASTER(AMO)
+;EL RELOJ SERA FOSC/4, MODO DEL RELOJ 1,1 ==> CKP=1 Y CKE=0
+;ENVIA LA LECTURA DEL PUERTOB CADA 300ms AL ESCLAVO Y LO QUE RECIBE
+;EL AMO LO DESPLIEGA EN EL PUERTOD.
+;EL ESCALVO SE SELECCIONA CON EL PORTC,0
 ;---------------------------MACROS----------------------------
 ;---------------------------DEFINE----------------------------
 ;----------------------------EQU------------------------------
@@ -8,24 +12,55 @@
 ;					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_INTERRUPT.ASM>	;MACRO PARA EL USO DE INTERRUPCIONES
 ;					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_LCD.ASM>	;MACRO PARA EL USO DISPLAY LCD
 ;					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_7SEG.ASM>	;MACRO PARA EL USO DISPLAY 7 SEG					
-;					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS_MACROS.ASM> ;MACRO DE RETARDO
+					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS_MACROS.ASM> ;MACRO DE RETARDO
 					INCLUDE		<D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_CONFIGURACION_INT.ASM> ;MACRO DE CONFIGURACION BASICA
 					ORG			0X0000			;EMPEZAR EN LA DIRECCION 0 DE LA MEMORIA DE PROGRAMA
 					GOTO		INICIALIZA
 ;					VECTOR_INTERRUPCION			;SI SE USA INTERRUPCIONES DESCOMENTAR
-;					SIETE_SG_KC					;SI SE USA DISPLAY 7 SEG DESCOMENTAR
-;************************************************************************                *************************************************************************
-;TABLA_LCD			ADDWF			PCL,F
-;LCD_FILA1			ADDWF			PCL,F
-;					DT				""
-;LCD_FILA2			ADDWF			PCL,F
-;					DT				""	
+
 					CONFIGURACION				;NOS DEJA EN EL BANCO 1						
 ;-----------------------CODIGO PRINCIPAL------------------------------
 ;ETIQUETAS			|NEMONICOS		| OPERANDOS 		| COMENTARIOS	
-					
-;*************************************************************************
+					CLRF			TRISD
+					MOVLW			B'11011110'			;BC5 -> SDO, BC4-> SDI, BC3-> SCK, BC0-> CONTROL DEL SLAVE
+	 				MOVWF			TRISC
+									
+	
+										
+;*******************CONFIGURACION SPI**************************
+					CLRF			SSPSTAT
+					BCF				SSPSTAT,SMP			;MUESTREAR ENTRADA DE DATOS EN LA MITAD
+					BCF				SSPSTAT,CKE			;CKE=0,CKP = 1,TRANSMISION DE DATA EN EL FLANCO DE SUBIDA OF SCK
+					BCF				SSPSTAT,BF			;BANDERA QUE INDICA QUE LA TRANSMISION ESTA COMPLETA (0), 1->TRANSMISION EN PROGRESO
 				
+					BCF				STATUS,RP0			;BANCO 0
+					
+					CLRF			SSPCON
+					BSF				SSPCON,SSPEN		;HABILITAR PUERTO SERIAL SINCRONO MODO SPI		
+					BSF				SSPCON,CKP			;CKP = 1, CKE=0 ,TRANSMISION DE DATA EN EL FLANCO DE SUBIDA OF SCK
+		
+					BCF				SSPCON,SSPM0		;PUERTO SERIAL SINCRONO COMO SPI MAESTRO FOSC/4 (VELOCIDAD DEL SCK)				
+					BCF				SSPCON,SSPM1
+					BCF				SSPCON,SSPM2
+					BCF				SSPCON,SSPM3
+;******************************************************************************************************
+					BSF				PORTC,0				;ESCLAVO INACTIVO
+					
+LOOP:				RETARDO_3V		.5,.86,.99			;RETARDO 300ms PARA FOSC 4MHZ
+					BCF				PORTC,0				;ESCLAVO ACTIVO
+			
+					MOVF			PORTB,W
+					MOVWF			SSPBUF				;ENVIAR EL VALOR DEL PUERTOB AL BUFFER SPI
+					
+					BSF				STATUS,RP0			;BANCO 1
+					BTFSS			SSPSTAT,BF			;SE ACTIVO LA BANDERA DE TRANSMISION?
+					GOTO 			$-1					;NO SE ACTIVO, VUELVE A PREGUNTAR
+					BCF				STATUS,RP0			;SI SE ACTIVO, CAMBIO DE BANCO 0
+					MOVF			SSPBUF,W			;LEER LO QUE ESTA EN EL BUFFER SPI Y ENVIARLO A W
+					MOVWF			PORTD				;ENVIAR LO QUE ESTA EN BUFFER AL PUERTO D
+					BSF				PORTC,0				;DESHABILITAMOS ESCLAVO
+					GOTO			LOOP
+					
 ;*************************************************************************
 					
 ;------------------SERVICIO DE RUTINA DE INTERRUPCION-----------------

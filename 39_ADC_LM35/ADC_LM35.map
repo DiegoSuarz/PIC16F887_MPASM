@@ -1,12 +1,12 @@
 MPLINK 4.49, Linker
-Linker Map File - Created Mon Feb 14 18:27:01 2022
+Linker Map File - Created Tue Feb 15 18:00:42 2022
 
                                  Section Info
                   Section       Type    Address   Location Size(Bytes)
                 ---------  ---------  ---------  ---------  ---------
                    .org_0       code   0x000000    program   0x000000
                    .org_1       code   0x000000    program   0x000002
-                   .org_2       code   0x000004    program   0x000492
+                   .org_2       code   0x000004    program   0x00049c
   .config_2007_ADC_LM35.O       code   0x002007    program   0x000002
   .config_2008_ADC_LM35.O       code   0x002008    program   0x000002
 
@@ -16,75 +16,75 @@ Linker Map File - Created Mon Feb 14 18:27:01 2022
                                Start         End      
                            ---------   ---------      
                             0x000000    0x000000      
-                            0x000004    0x00024c      
+                            0x000004    0x000251      
                             0x002007    0x002008      
-            588 out of 8455 program addresses used, program memory utilization is 6%
+            593 out of 8455 program addresses used, program memory utilization is 7%
 
 
 
                               Symbols - Sorted by Name
                      Name    Address   Location    Storage File                     
                 ---------  ---------  ---------  --------- ---------                
-                 ACTIVA_E   0x00022c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-            BIN_A_DECIMAL   0x00016f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-              BUSCA_TECLA   0x000139    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                 CLR_FLAG   0x000126    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                  DECRE2V   0x0001ca    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                  DECRE3V   0x0001d7    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-          DIRECCION_DDRAM   0x00020b    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-               ENTRY_MODE   0x0001f9    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-             ESCRIBE_DATO   0x000219    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                  FIN_INT   0x000156    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                    FUE01   0x0000d4    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                   FUE011   0x0000ea    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                    FUE10   0x0000df    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-             FUNCTION_SET   0x0001f3    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                     HOME   0x000201    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-         IMPRIME_CARACTER   0x00020d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-          IMPRIME_DECIMAL   0x000189    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-            IMPRIME_TECLA   0x000145    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-             IMPRIME_TEMP   0x0000f0    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                 ACTIVA_E   0x000231    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+            BIN_A_DECIMAL   0x000174    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+              BUSCA_TECLA   0x00013c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                 CLR_FLAG   0x000128    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                  DECRE2V   0x0001cf    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                  DECRE3V   0x0001dc    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+          DIRECCION_DDRAM   0x000210    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+               ENTRY_MODE   0x0001fe    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+             ESCRIBE_DATO   0x00021e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                  FIN_INT   0x00015a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                    FUE01   0x0000d6    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                   FUE011   0x0000ec    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                    FUE10   0x0000e1    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+             FUNCTION_SET   0x0001f8    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                     HOME   0x000206    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+         IMPRIME_CARACTER   0x000212    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+          IMPRIME_DECIMAL   0x00018e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+            IMPRIME_TECLA   0x000148    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+             IMPRIME_TEMP   0x0000f2    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
                INICIALIZA   0x000052    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                 INIT_LCD   0x0001e2    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-            INT_ON_CHANGE   0x00012a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                      ISR   0x0000ad    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                 INIT_LCD   0x0001e7    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+            INT_ON_CHANGE   0x00012c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                      ISR   0x0000af    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
                 LCD_FILA1   0x000030    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
                 LCD_FILA2   0x000041    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                  LCD_OFF   0x0001f5    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                   LCD_ON   0x0001fb    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-            LCD_ON_CURSOR   0x0001fd    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-        LCD_ON_CURS_BLINK   0x0001ff    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-               LIMPIA_DEC   0x000090    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               LIMPIA_LCD   0x0001f7    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-               LIMPIA_UNI   0x000091    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               LM35_FUE01   0x00010a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-              LM35_FUE011   0x000120    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               LM35_FUE10   0x000115    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-            MENSAJE_FILA1   0x000239    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-            MENSAJE_FILA2   0x000243    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-               MINISALUDO   0x000223    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                RECARGA3V   0x0001d5    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                RECARGA60   0x000092    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-          RECORRE_DER_CUR   0x000207    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-          RECORRE_DER_LCD   0x000203    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-          RECORRE_IZQ_CUR   0x000209    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-          RECORRE_IZQ_LCD   0x000205    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                  RESTA10   0x00017a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                 RESTA100   0x000172    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-              RETARDO_8mS   0x000198    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                  LCD_OFF   0x0001fa    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                   LCD_ON   0x000200    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+            LCD_ON_CURSOR   0x000202    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+        LCD_ON_CURS_BLINK   0x000204    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+               LIMPIA_DEC   0x000092    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+               LIMPIA_LCD   0x0001fc    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+               LIMPIA_UNI   0x000093    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+               LM35_FUE01   0x00010c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+              LM35_FUE011   0x000122    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+               LM35_FUE10   0x000117    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+            MENSAJE_FILA1   0x00023e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+            MENSAJE_FILA2   0x000248    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+               MINISALUDO   0x000228    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                RECARGA3V   0x0001da    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                RECARGA60   0x000094    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+          RECORRE_DER_CUR   0x00020c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+          RECORRE_DER_LCD   0x000208    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+          RECORRE_IZQ_CUR   0x00020e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+          RECORRE_IZQ_LCD   0x00020a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                  RESTA10   0x00017f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                 RESTA100   0x000177    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+              RETARDO_8mS   0x00019d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
                 SIETE_SEG   0x00001f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                     ST1V   0x0001c1    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                     ST2V   0x0001c8    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                     ST3V   0x0001d3    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                 SUBT25MS   0x000190    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                   SUMA10   0x000180    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                  SUMA100   0x000178    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                   TABLA1   0x00023a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                   TABLA2   0x000244    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-          TABLA_HEX_ASCII   0x0001af    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                     ST1V   0x0001c6    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST2V   0x0001cd    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST3V   0x0001d8    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                 SUBT25MS   0x000195    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                   SUMA10   0x000185    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                  SUMA100   0x00017d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                   TABLA1   0x00023f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                   TABLA2   0x000249    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+          TABLA_HEX_ASCII   0x0001b4    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
                 TABLA_LCD   0x00002f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               TABLA_TECL   0x00019e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               VISUALIZAR   0x000094    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+               TABLA_TECL   0x0001a3    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+               VISUALIZAR   0x000096    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
 
 
 
@@ -96,60 +96,60 @@ Linker Map File - Created Mon Feb 14 18:27:01 2022
                 LCD_FILA1   0x000030    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
                 LCD_FILA2   0x000041    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
                INICIALIZA   0x000052    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               LIMPIA_DEC   0x000090    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               LIMPIA_UNI   0x000091    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                RECARGA60   0x000092    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               VISUALIZAR   0x000094    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                      ISR   0x0000ad    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                    FUE01   0x0000d4    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                    FUE10   0x0000df    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                   FUE011   0x0000ea    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-             IMPRIME_TEMP   0x0000f0    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               LM35_FUE01   0x00010a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               LM35_FUE10   0x000115    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-              LM35_FUE011   0x000120    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                 CLR_FLAG   0x000126    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-            INT_ON_CHANGE   0x00012a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-              BUSCA_TECLA   0x000139    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-            IMPRIME_TECLA   0x000145    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                  FIN_INT   0x000156    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-            BIN_A_DECIMAL   0x00016f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                 RESTA100   0x000172    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                  SUMA100   0x000178    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                  RESTA10   0x00017a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                   SUMA10   0x000180    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-          IMPRIME_DECIMAL   0x000189    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                 SUBT25MS   0x000190    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-              RETARDO_8mS   0x000198    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-               TABLA_TECL   0x00019e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-          TABLA_HEX_ASCII   0x0001af    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
-                     ST1V   0x0001c1    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                     ST2V   0x0001c8    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                  DECRE2V   0x0001ca    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                     ST3V   0x0001d3    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                RECARGA3V   0x0001d5    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                  DECRE3V   0x0001d7    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
-                 INIT_LCD   0x0001e2    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-             FUNCTION_SET   0x0001f3    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                  LCD_OFF   0x0001f5    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-               LIMPIA_LCD   0x0001f7    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-               ENTRY_MODE   0x0001f9    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                   LCD_ON   0x0001fb    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-            LCD_ON_CURSOR   0x0001fd    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-        LCD_ON_CURS_BLINK   0x0001ff    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                     HOME   0x000201    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-          RECORRE_DER_LCD   0x000203    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-          RECORRE_IZQ_LCD   0x000205    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-          RECORRE_DER_CUR   0x000207    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-          RECORRE_IZQ_CUR   0x000209    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-          DIRECCION_DDRAM   0x00020b    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-         IMPRIME_CARACTER   0x00020d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-             ESCRIBE_DATO   0x000219    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-               MINISALUDO   0x000223    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                 ACTIVA_E   0x00022c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-            MENSAJE_FILA1   0x000239    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                   TABLA1   0x00023a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-            MENSAJE_FILA2   0x000243    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
-                   TABLA2   0x000244    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+               LIMPIA_DEC   0x000092    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+               LIMPIA_UNI   0x000093    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                RECARGA60   0x000094    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+               VISUALIZAR   0x000096    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                      ISR   0x0000af    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                    FUE01   0x0000d6    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                    FUE10   0x0000e1    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                   FUE011   0x0000ec    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+             IMPRIME_TEMP   0x0000f2    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+               LM35_FUE01   0x00010c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+               LM35_FUE10   0x000117    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+              LM35_FUE011   0x000122    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                 CLR_FLAG   0x000128    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+            INT_ON_CHANGE   0x00012c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+              BUSCA_TECLA   0x00013c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+            IMPRIME_TECLA   0x000148    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                  FIN_INT   0x00015a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+            BIN_A_DECIMAL   0x000174    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                 RESTA100   0x000177    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                  SUMA100   0x00017d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                  RESTA10   0x00017f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                   SUMA10   0x000185    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+          IMPRIME_DECIMAL   0x00018e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                 SUBT25MS   0x000195    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+              RETARDO_8mS   0x00019d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+               TABLA_TECL   0x0001a3    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+          TABLA_HEX_ASCII   0x0001b4    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\39_ADC_LM35\ADC_LM35.asm
+                     ST1V   0x0001c6    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST2V   0x0001cd    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                  DECRE2V   0x0001cf    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST3V   0x0001d8    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                RECARGA3V   0x0001da    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                  DECRE3V   0x0001dc    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                 INIT_LCD   0x0001e7    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+             FUNCTION_SET   0x0001f8    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                  LCD_OFF   0x0001fa    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+               LIMPIA_LCD   0x0001fc    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+               ENTRY_MODE   0x0001fe    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                   LCD_ON   0x000200    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+            LCD_ON_CURSOR   0x000202    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+        LCD_ON_CURS_BLINK   0x000204    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                     HOME   0x000206    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+          RECORRE_DER_LCD   0x000208    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+          RECORRE_IZQ_LCD   0x00020a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+          RECORRE_DER_CUR   0x00020c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+          RECORRE_IZQ_CUR   0x00020e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+          DIRECCION_DDRAM   0x000210    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+         IMPRIME_CARACTER   0x000212    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+             ESCRIBE_DATO   0x00021e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+               MINISALUDO   0x000228    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                 ACTIVA_E   0x000231    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+            MENSAJE_FILA1   0x00023e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                   TABLA1   0x00023f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+            MENSAJE_FILA2   0x000248    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
+                   TABLA2   0x000249    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_LCD.asm
 
 
