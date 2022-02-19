@@ -1,0 +1,1311 @@
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;DESCRIPCION:
+                      00002 ;SE DEBE CREAR UNA APLICACION QUE PERMITA ENVIAR POR EL PUERTO USART
+                      00003 ;LOS DATOS QUE ESTAN EN EL PORTB, Y RECIBIR INFORMACION POR EL PUERTO 
+                      00004 ;USART EN REFLEJARLOS EN EL PUERTD
+                      00005 
+                      00006 ;EN EL PROGRAMA PRINCIPAL ESTARA DE FORMA PERMANENTE EN LOS DISPLAY 7 SEG
+                      00007 ;CONFIGURAR PUERTO USART A 2500 BAUDIOS BIT X SEG.
+                      00008 
+                      00009 
+                      00010 ;---------------------------MACROS----------------------------
+                      00011 ;---------------------------DEFINE----------------------------
+                      00012 ;----------------------------EQU------------------------------
+                      00013 ;---------------------------CBLOCK----------------------------
+                      00014 ;---------------------------HEADER----------------------------
+                      00015                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_INTERRUPT.ASM>      ;MACRO PARA EL USO DE INTERRUPCI
+                      00001 ;GUARDAR VARIABLES STATUS,PC,W,VARIABLE DE RETARDO
+Warning[205]: Found directive in column 1. (CBLOCK)
+                      00002 CBLOCK          0X70
+  00000070            00003                                                                 SAVE_W,SAVE_STATUS,SAVE_PC
+Warning[205]: Found directive in column 1. (ENDC)
+                      00004 ENDC
+                      00005 
+                      00006 
+                      00007 SAVE_REG        MACRO
+                      00008                         MOVWF           SAVE_W
+                      00009                         SWAPF           STATUS,W
+                      00010                         MOVWF           SAVE_STATUS
+                      00011                         CLRF            STATUS
+                      00012                         MOVF            PCLATH,W
+                      00013                         MOVWF           SAVE_PC
+                      00014                         MOVF            0X60,W
+                      00015                         MOVWF           0X75
+                      00016                         MOVF            0X61,W
+                      00017                         MOVWF           0X76 
+                      00018                         MOVF            0X61,W
+                      00019                         MOVWF           0X76
+                      00020                         MOVF            0X62,W
+                      00021                         MOVWF           0X77
+                      00022                         MOVF            0X63,W
+                      00023                         MOVWF           0X78
+                      00024                         MOVF            0X64,W
+                      00025                         MOVWF           0X79
+                      00026                         MOVF            0X65,W
+                      00027                         MOVWF           0X7A
+                      00028                         MOVF            0X66,W
+                      00029                         MOVWF           0X7B
+                      00030                         MOVF            0X67,W
+                      00031                         MOVWF           0X7C
+                      00032                         MOVF            0X68,W
+                      00033                         MOVWF           0X7D
+                      00034                         ENDM
+                      00035 
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00036 RESTORE_REG MACRO
+                      00037                         MOVF                    0X75,W
+                      00038                         MOVWF                   0X60
+                      00039                         MOVF                    0X76,W
+                      00040                         MOVWF                   0X61
+                      00041                         MOVF                    0X77,W
+                      00042                         MOVWF                   0X62
+                      00043                         MOVF                    0X78,W
+                      00044                         MOVWF                   0X63
+                      00045                         MOVF                    0X78,W
+                      00046                         MOVWF                   0X64
+                      00047                         MOVF                    0X7A,W
+                      00048                         MOVWF                   0X65
+                      00049                         MOVF                    0X7B,W
+                      00050                         MOVWF                   0X66
+                      00051                         MOVF                    0X7C,W
+                      00052                         MOVWF                   0X67
+                      00053                         MOVF                    0X7D,W
+                      00054                         MOVWF                   0X68
+                      00055                         MOVF                    SAVE_PC,W
+                      00056                         MOVWF                   PCLATH
+                      00057                         SWAPF                   SAVE_STATUS,W
+                      00058                         MOVWF                   STATUS
+                      00059                         SWAPF                   SAVE_W,F
+                      00060                         SWAPF                   SAVE_W,W
+                      00061                         ENDM
+                      00016 ;                                       INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_LCD.ASM>    ;MACRO PARA EL USO DISPLAY LCD
+                      00017                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_7SEG.ASM>   ;MACRO PARA EL USO DISPLAY 7 SEG        
+                      00001 
+                      00002 #DEFINE UNIDAD_ENA      BSF     PORTE,0
+                      00003 #DEFINE UNIDAD_DIS      BCF     PORTE,0
+                      00004 #DEFINE DECENA_ENA      BSF     PORTE,1
+                      00005 #DEFINE DECENA_DIS      BCF     PORTE,1
+                      00006 
+  00000020            00007 UNIDAD          EQU     0X20
+  00000021            00008 DECENA          EQU 0X21        
+  00000022            00009 CONT60          EQU     0X22
+                      00010 
+                      00011 
+                      00012 SIETE_SG_KC     MACRO
+                      00013 SIETE_SEG:                                              
+                      00014                         ADDWF           PCL,F
+                      00015 
+                      00016                         DT                      0X3F,0X06,0X5B,0X4F,0X66,0X7D,0X07,0X7F,0X6F,0X77,0X7C,0
+                            X39,0X5E,0X79,0X71
+                      00017                         ENDM
+                      00018                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS_MACROS.ASM> ;MACRO DE RETARDO
+                      00001 ;---------RETARDO 1 VARIABLE-----------------
+                      00002 
+                      00003 RETARDO_1V      MACRO           VAR1
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00004                 MOVLW           VAR1
+                      00005                 MOVWF           0X60
+                      00006                 CALL            ST1V
+                      00007                 ENDM
+                      00008 
+                      00009 ;---------RETARDO 2 VARIABLES-----------------
+                      00010 RETARDO_2V      MACRO           VAR1,VAR2
+                      00011                 MOVLW           VAR1
+                      00012                 MOVWF           0X61
+                      00013                 MOVLW           VAR2
+                      00014                 MOVWF           0X62
+                      00015                 CALL            ST2V
+                      00016                 ENDM
+                      00017 
+                      00018 ;---------RETARDO 3 VARIABLES-----------------
+                      00019 RETARDO_3V      MACRO           VAR1,VAR2,VAR3
+                      00020                 MOVLW           VAR1                            ;VAR1
+                      00021                 MOVWF           0X64
+                      00022                 MOVLW           VAR2                            ;VAR2
+                      00023                 MOVWF           0X65                    
+                      00024                 MOVLW           VAR3                            ;VAR3
+                      00025                 MOVWF           VAR3
+                      00026                 CALL            ST3V
+                      00027                 ENDM
+                      00028 ;---------------------------------------------------
+                      00019                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_CONFIGURACION_INT.ASM> ;MACRO DE CONFIGURACION BASIC
+                      00001 ;PLANTILLA PARA CONFIGURACION BASICA
+                      00002 VECTOR_INTERRUPCION             MACRO           
+                      00003                                         ORG                     0X0004                  ;VECTOR DE INTER
+                            RUPCION
+                      00004                                         SAVE_REG                                        ;GUARDAR REGISTR
+                            OS DE INTERES
+                      00005                                         GOTO            ISR                             ;IR A RUTINA DE 
+                            SERVICIO DE INTERRUPCION
+                      00006                                 ENDM
+                      00007 
+                      00008 
+                      00009 
+                      00010 ;ETIQUETAS | NEMONICOS | OPERANDOS              | COMENTARIOS   
+                      00011 
+                      00012 CONFIGURACION           MACRO
+                      00013                 
+                      00014 INICIALIZA:             BSF                     STATUS,RP0
+                      00015                                         BSF                     STATUS,RP1              ;ACCEDIENDO AL B
+                            ANCO 3
+                      00016                                         CLRF            ANSEL
+                      00017                                         CLRF            ANSELH                  ;TODOS LOS PINES DIGITAL
+                            ES
+                      00018                         
+                      00019                                         BCF                     STATUS,RP1
+                      00020                                         BSF                     STATUS,RP0              ;ACCEDIENDO AL B
+                            ANCO 1
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE  4
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00021                                         CLRF            TRISA                   ;PUERTO A COMO ENTRADA
+                      00022                                         CLRF            TRISB                   ;PUERTO B COMO SALIDA
+                      00023                                         CLRF            TRISC                   ;PUERTO C COMO ENTRADA
+                      00024                                         CLRF            TRISD                   ;PUERTO D COMO SALIDA
+                      00025                                         CLRF            TRISE                   ;PUERTO E COMO ENTRADA
+                      00026                         
+                      00027 
+                      00028                                         BCF                     STATUS,RP0              
+                      00029                                         BCF                     STATUS,RP1              ;ACCEDIENDO AL B
+                            ANCO 0
+                      00030                                         CLRF            PORTA                   ;LIMPIAR EL PUERTO A
+                      00031                                         CLRF            PORTB                   ;LIMPIAR EL PUERTO B
+                      00032                                         CLRF            PORTC                   ;LIMPIAR EL PUERTO C
+                      00033                                         CLRF            PORTD                   ;LIMPIAR EL PUERTO D
+                      00034                                         CLRF            PORTE                   ;LIMPIAR EL PUERTO E
+                      00035                 
+                      00036                                         BCF                     STATUS,RP1
+                      00037                                         BSF                     STATUS,RP0              ;ACCEDIENDO AL B
+                            ANCO 1
+                      00038                                         ENDM    
+                      00039 
+                      00040         PROCESSOR       16F887
+2007   23E4           00041                                         __CONFIG        0X2007,23E4
+2008   3FFF           00042                                         __CONFIG        0X2008,3FFF
+                      00043                                         INCLUDE         <P16F887.INC>   
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ;  MPASM PIC16F887 processor include
+                      00005 ; 
+                      00006 ;  (c) Copyright 1999-2013 Microchip Technology, All rights reserved
+                      00007 ;==========================================================================
+                      00008 
+                      00809         LIST
+0000                  00020                                         ORG                     0X0000                  ;EMPEZAR EN LA D
+                            IRECCION 0 DE LA MEMORIA DE PROGRAMA
+0000   282F           00021                                         GOTO            INICIALIZA
+                      00022                                         VECTOR_INTERRUPCION                     ;SI SE USA INTERRUPCIONE
+                            S DESCOMENTAR
+0004                      M                                         ORG                     0X0004                  ;VECTOR DE INTER
+                            RUPCION
+                          M                                         SAVE_REG                                        ;GUARDAR REGISTR
+                            OS DE INTERES
+0004   00F0               M                         MOVWF           SAVE_W
+0005   0E03               M                         SWAPF           STATUS,W
+0006   00F1               M                         MOVWF           SAVE_STATUS
+0007   0183               M                         CLRF            STATUS
+0008   080A               M                         MOVF            PCLATH,W
+0009   00F2               M                         MOVWF           SAVE_PC
+000A   0860               M                         MOVF            0X60,W
+000B   00F5               M                         MOVWF           0X75
+000C   0861               M                         MOVF            0X61,W
+000D   00F6               M                         MOVWF           0X76 
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE  5
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+000E   0861               M                         MOVF            0X61,W
+000F   00F6               M                         MOVWF           0X76
+0010   0862               M                         MOVF            0X62,W
+0011   00F7               M                         MOVWF           0X77
+0012   0863               M                         MOVF            0X63,W
+0013   00F8               M                         MOVWF           0X78
+0014   0864               M                         MOVF            0X64,W
+0015   00F9               M                         MOVWF           0X79
+0016   0865               M                         MOVF            0X65,W
+0017   00FA               M                         MOVWF           0X7A
+0018   0866               M                         MOVF            0X66,W
+0019   00FB               M                         MOVWF           0X7B
+001A   0867               M                         MOVF            0X67,W
+001B   00FC               M                         MOVWF           0X7C
+001C   0868               M                         MOVF            0X68,W
+001D   00FD               M                         MOVWF           0X7D
+001E   2888               M                                         GOTO            ISR                             ;IR A RUTINA DE 
+                            SERVICIO DE INTERRUPCION
+                      00023                                         SIETE_SG_KC                                     ;SI SE USA DISPL
+                            AY 7 SEG DESCOMENTAR
+001F                      M SIETE_SEG:                                              
+001F   0782               M                         ADDWF           PCL,F
+                          M 
+0020   343F 3406 345B     M                         DT                      0X3F,0X06,0X5B,0X4F,0X66,0X7D,0X07,0X7F,0X6F,0X77,0X7C,0
+                            X39,0X5E,0X79,0X71
+       344F 3466 347D 
+       3407 347F 346F 
+       3477 347C 3439 
+       345E 3479 3471 
+                      00024                                         CONFIGURACION                           ;NOS DEJA EN EL BANCO 1
+                          M                 
+002F   1683               M INICIALIZA:             BSF                     STATUS,RP0
+0030   1703               M                                         BSF                     STATUS,RP1              ;ACCEDIENDO AL B
+                            ANCO 3
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0031   0188               M                                         CLRF            ANSEL
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0032   0189               M                                         CLRF            ANSELH                  ;TODOS LOS PINES DIGITAL
+                            ES
+                          M                         
+0033   1303               M                                         BCF                     STATUS,RP1
+0034   1683               M                                         BSF                     STATUS,RP0              ;ACCEDIENDO AL B
+                            ANCO 1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0035   0185               M                                         CLRF            TRISA                   ;PUERTO A COMO ENTRADA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0036   0186               M                                         CLRF            TRISB                   ;PUERTO B COMO SALIDA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0037   0187               M                                         CLRF            TRISC                   ;PUERTO C COMO ENTRADA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0038   0188               M                                         CLRF            TRISD                   ;PUERTO D COMO SALIDA
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0039   0189               M                                         CLRF            TRISE                   ;PUERTO E COMO ENTRADA
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE  6
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                          M                         
+                          M 
+003A   1283               M                                         BCF                     STATUS,RP0              
+003B   1303               M                                         BCF                     STATUS,RP1              ;ACCEDIENDO AL B
+                            ANCO 0
+003C   0185               M                                         CLRF            PORTA                   ;LIMPIAR EL PUERTO A
+003D   0186               M                                         CLRF            PORTB                   ;LIMPIAR EL PUERTO B
+003E   0187               M                                         CLRF            PORTC                   ;LIMPIAR EL PUERTO C
+003F   0188               M                                         CLRF            PORTD                   ;LIMPIAR EL PUERTO D
+0040   0189               M                                         CLRF            PORTE                   ;LIMPIAR EL PUERTO E
+                          M                 
+0041   1303               M                                         BCF                     STATUS,RP1
+0042   1683               M                                         BSF                     STATUS,RP0              ;ACCEDIENDO AL B
+                            ANCO 1
+                      00025 ;-----------------------CODIGO PRINCIPAL------------------------------
+                      00026 ;ETIQUETAS                      |NEMONICOS              | OPERANDOS             | COMENTARIOS   
+                      00027                                         
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0043   0187           00028                                         CLRF                    TRISC
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0044   1307           00029                                         BCF                             TRISC,6                         
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0045   1787           00030                                         BSF                             TRISC,7
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0046   0188           00031                                         CLRF                    TRISD                           ;CONTROL
+                             DISPLAY 7 SEGMENTOS
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0047   0185           00032                                         CLRF                    TRISA                           ;CONTROL
+                             DE BARRA LEDS
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0048   1009           00033                                         BCF                             TRISE,0                         
+                            ;CONTROL DE TRANSISTORES PARA DISPLAY 7 SEG
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0049   1089           00034                                         BCF                             TRISE,1
+                      00035                                                         
+                      00036 ;************CONFIGURACION INTERRUPCION IOC***************************************
+004A   30FF           00037                                         MOVLW                   0XFF
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+004B   0086           00038                                         MOVWF                   TRISB                           ;CONTROL
+                             DIPSW                          
+004C   30FF           00039                                         MOVLW                   0XFF
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+004D   0095           00040                                         MOVWF                   WPUB                            ;HABILIT
+                            ANDO RESITENCIAS DE PULL UP PUERTO B
+                      00041                                         
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+004E   1381           00042                                         BCF                             OPTION_REG,7                    
+                            ;RESISTENCIAS PULL UP PUERTO B
+                      00043                                         
+004F   30FF           00044                                         MOVLW                   0XFF
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0050   0096           00045                                         MOVWF                   IOCB
+                      00046                                 
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE  7
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0051   1283           00047                                         BCF                             STATUS,RP0                      
+                            ;BANCO 0
+                      00048                                         
+0052   0806           00049                                         MOVF                    PORTB,W                         ;LEER EL
+                             VALOR DEL PUERTO B, CONDICION DE LAS INTERRUPCIONES IOC
+                      00050                                         
+0053   100B           00051                                         BCF                             INTCON,RBIF                     
+                            ;LIMPIAR BANDERA DE     IOC
+0054   158B           00052                                         BSF                             INTCON,RBIE                     
+                            ;HABILITAR INTERRUPCION IOC
+                      00053                                         
+                      00054 
+                      00055 ;*********************CONFIGURACION USART****************************************************
+                      00056                                         
+0055   1683           00057                                         BSF                             STATUS,RP0                      
+                            ;BANCO 1
+0056   3019           00058                                         MOVLW                   .25
+0057   3099           00059                                         MOVLW                   SPBRG                           ;TASA DE
+                             TRANSFERENCIA ES DE 2400 BAUDIOS, BRGH=0 Y BRG16=0, SPBRGH NO SE REQUIERE
+                      00060                                         
+                      00061                                         ;BCF                            BAUDCTL,BRG16           ;(BANCO 
+                            3) POR DEFECTO 0                                
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0058   0198           00062                                         CLRF                    TXSTA                                   
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0059   1118           00063                                         BCF                             TXSTA,BRGH                      
+                            ;MODO LOW SPEED
+                      00064                                         
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005A   1318           00065                                         BCF                             TXSTA,TX9                       
+                            ;MODO DE OPERACION 8 BITS
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005B   1698           00066                                         BSF                             TXSTA,TXEN                      
+                            ;HABILITA LA TRANSMISION        
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005C   1498           00067                                         BSF                             TXSTA,TRMT                      
+                            ;BANDERA DE LLENADO DE BUFFER USART
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+005D   1218           00068                                         BCF                             TXSTA,SYNC                      
+                            ;MODO EUSART ASINCRONO
+                      00069                                         
+005E   1283           00070                                         BCF                             STATUS,RP0                      
+                            ;BANCO 0
+005F   0198           00071                                         CLRF                    RCSTA
+                      00072                         
+0060   1798           00073                                         BSF                             RCSTA,SPEN                      
+                            ;HABILITAR EL PUERTO USART
+0061   1318           00074                                         BCF                             RCSTA,RX9                       
+                            ;MODO RECEPCION 8 BITS
+0062   1618           00075                                         BSF                             RCSTA,CREN                      
+                            ;HABILITAR RECEPCION
+0063   1118           00076                                         BCF                             RCSTA,FERR                      
+                            ;BIT DE ERROR LECTURA
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE  8
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0064   1098           00077                                         BCF                             RCSTA,OERR                      
+                            ;BIT DE ERROR DE DESBORDAMIENTO
+                      00078 
+0065   128C           00079                                         BCF                             PIR1,RCIF                       
+                            ;BAJANDO BANDERA DE RECEPCION USART
+0066   1683           00080                                         BSF                             STATUS,RP0                      
+                            ;BANCO 1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0067   168C           00081                                         BSF                             PIE1,RCIE                       
+                            ;ACTIVANDO INTERRUCPICON POR RECEPCION  
+0068   170B           00082                                         BSF                             INTCON,PEIE                     
+                            ;HABILITANDO INTERRUPCIONES DE PERIFERICOS
+0069   178B           00083                                         BSF                             INTCON,GIE                      
+                            ;HABILITAR INTERRUPCIONES GLOBALES
+                      00084                 
+006A   1283           00085                                         BCF                             STATUS,RP0                      
+                            ;BANCO 0
+                      00086 ;*******************************************************************************************************
+                            ***************************************
+006B   01A1           00087 LIMPIA_DEC:                     CLRF                    DECENA                          ;LIMPIAMOS LA VA
+                            RIABLE DECENA (0X21)                    
+006C   01A0           00088 LIMPIA_UNI:                     CLRF                    UNIDAD                          ;LIMPIAMOS LA VA
+                            RIABLE UNIDAD (0X20)
+                      00089 
+                      00090                         
+006D   303C           00091 RECARGA60:                      MOVLW                   .60
+006E   00A2           00092                                         MOVWF                   CONT60                          ;CARGARM
+                            OS LA VARIABLE CONT60 CON .60
+                      00093 
+006F   0820           00094 VISUALIZAR:                     MOVF                    UNIDAD,W                        ;LEEMOS LA VARIA
+                            BLE UNIDAD Y LO ALMACENAMOS EN W
+0070   201F           00095                                         CALL                    SIETE_SEG                       ;LLAMAMO
+                            S A LA RUTINA 7 SEG
+0071   0088           00096                                         MOVWF                   PORTD                           ;VISUALI
+                            ZAMOS LA UNIDAD POR EL PUERTO D
+                      00097 
+0072   1409           00098                                         UNIDAD_ENA                                                      
+                            ;ENCENDER UNIDADES DISPLAY(ENCENDER TRANSITOR RA0)
+0073   20B8           00099                                         CALL                    RETARDO_8mS
+0074   1009           00100                                         UNIDAD_DIS                                                      
+                            ;ENCENDER UNIDADES DISPLAY(APAGAR TRANSITOR RA0)
+                      00101 
+0075   0821           00102                                         MOVF                    DECENA,W                        ;LEEMOS 
+                            LA VARIABLE UNIDAD Y LO ALMACENAMOS EN W
+0076   201F           00103                                         CALL                    SIETE_SEG                       ;LLAMAMO
+                            S A LA RUTINA 7 SEG
+0077   0088           00104                                         MOVWF                   PORTD                           ;VISUALI
+                            ZAMOS LA DECENA POR EL PUERTO D
+                      00105 
+0078   1489           00106                                         DECENA_ENA                                                      
+                            ;ENCENDER DECENAS DISPLAY(ENCENDER TRANSITOR RA1)
+0079   20B8           00107                                         CALL                    RETARDO_8mS
+007A   1089           00108                                         DECENA_DIS                                                      
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE  9
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            ;APAGAR DECENAS DISPLAY(APAGAR TRANSITOR RA1)
+                      00109                         
+007B   0BA2           00110                                         DECFSZ                  CONT60,F                        ;BUCLE P
+                            ARA REPETIR 60 VECES LA VISUALIZACION DE LOS DIGITOS
+007C   286F           00111                                         GOTO                    VISUALIZAR                      
+                      00112                 
+007D   0AA0           00113                                         INCF                    UNIDAD,F                        ;INCREME
+                            NTAR LA VARIABLE UNIDAD
+007E   3009           00114                                         MOVLW                   0X09                    
+007F   0620           00115                                         XORWF                   UNIDAD,W                
+0080   1D03           00116                                         BTFSS                   STATUS,Z                        ;UNIDAD 
+                            == 9?
+0081   286D           00117                                         GOTO                    RECARGA60                       ;NO, VE 
+                            A REPETIR HASTA QUE SE CUMPLAN LOS 60 SIGLOS
+0082   0AA1           00118                                         INCF                    DECENA,F                        ;SI, INC
+                            REMENTA DECENA EN UNA UNIDAD, Y LIMPIA UNIDADES
+0083   3009           00119                                         MOVLW                   0X09
+0084   0621           00120                                         XORWF                   DECENA,W
+0085   1D03           00121                                         BTFSS                   STATUS,Z                        ;DECENA 
+                            == 9?
+0086   286C           00122                                         GOTO                    LIMPIA_UNI                      ;NO, VE 
+                            A LIMPIAR UNIDADES, PERO MANTENER LAS DECENAS 
+0087   286B           00123                                         GOTO                    LIMPIA_DEC                      ;SI, VE 
+                            Y LIMPIA UNIDADES Y DECENAS
+                      00124                                         
+                      00125 ;*************************************************************************
+                      00126                                         
+                      00127 ;------------------SERVICIO DE RUTINA DE INTERRUPCION-----------------
+0088   1E8C           00128 ISR:                            BTFSS                   PIR1,RCIF                       ;FUE INTERRUPCIO
+                            N POR RECEPCION USART?
+0089   2897           00129                                         GOTO                    INT_ON_CHANGE
+008A   1918           00130                                         BTFSC                   RCSTA,FERR
+008B   2891           00131                                         GOTO                    RX_ERROR
+008C   1898           00132                                         BTFSC                   RCSTA,OERR      
+008D   2891           00133                                         GOTO                    RX_ERROR
+008E   081A           00134                                         MOVF                    RCREG,W
+008F   0085           00135                                         MOVWF                   PORTA
+0090   2895           00136                                         GOTO                    BAJA_FLAG
+                      00137 
+0091   1218           00138 RX_ERROR:                       BCF                             RCSTA,CREN
+0092   1618           00139                                         BSF                             RCSTA,CREN
+0093   081A           00140                                         MOVF                    RCREG,W
+0094   081A           00141                                         MOVF                    RCREG,W
+0095   128C           00142 BAJA_FLAG:                      BCF                             PIR1,RCIF               
+0096   289F           00143                                         GOTO                    FIN_INT                                 
+                      00144                                         
+                      00145 ;**************************INTERRUPCION ON CHANGE*******************************                        
+                                    
+0097   1683           00146 INT_ON_CHANGE:          BSF                             STATUS,RP0              ;BANCO 1
+Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
+0098   1C98           00147                                         BTFSS                   TXSTA,TRMT              ;EL BUFFER TERMI
+                            NO DE LLENARSE?
+0099   2898           00148                                         GOTO            $-1                             ;AUN ESTA EN LIS
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 10
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                            TO EL BUFFER            
+009A   1283           00149                                         BCF                             STATUS,RP0              ;BANCO 0
+009B   0806           00150                                         MOVF                    PORTB,W
+009C   0099           00151                                         MOVWF                   TXREG
+                      00152                                         
+                      00153                                                                                 
+009D   0806           00154                                         MOVF                    PORTB,W
+009E   100B           00155                                         BCF                             INTCON,RBIF                     
+                            ;LIMPIAR BANDERA DE     IOC
+                      00156 FIN_INT:                        RESTORE_REG                                                     ;RESTAUR
+                            AMOS LOS REGISTROS DE INTERES
+009F   0875               M                         MOVF                    0X75,W
+00A0   00E0               M                         MOVWF                   0X60
+00A1   0876               M                         MOVF                    0X76,W
+00A2   00E1               M                         MOVWF                   0X61
+00A3   0877               M                         MOVF                    0X77,W
+00A4   00E2               M                         MOVWF                   0X62
+00A5   0878               M                         MOVF                    0X78,W
+00A6   00E3               M                         MOVWF                   0X63
+00A7   0878               M                         MOVF                    0X78,W
+00A8   00E4               M                         MOVWF                   0X64
+00A9   087A               M                         MOVF                    0X7A,W
+00AA   00E5               M                         MOVWF                   0X65
+00AB   087B               M                         MOVF                    0X7B,W
+00AC   00E6               M                         MOVWF                   0X66
+00AD   087C               M                         MOVF                    0X7C,W
+00AE   00E7               M                         MOVWF                   0X67
+00AF   087D               M                         MOVF                    0X7D,W
+00B0   00E8               M                         MOVWF                   0X68
+00B1   0872               M                         MOVF                    SAVE_PC,W
+00B2   008A               M                         MOVWF                   PCLATH
+00B3   0E71               M                         SWAPF                   SAVE_STATUS,W
+00B4   0083               M                         MOVWF                   STATUS
+00B5   0EF0               M                         SWAPF                   SAVE_W,F
+00B6   0E70               M                         SWAPF                   SAVE_W,W
+00B7   0009           00157                                         RETFIE                                                          
+                            ;REGRESAMOS DE LA INTERRUPCION
+                      00158                                         
+                      00159 ;-------------------------SUBRUTINAS----------------------------------
+                      00160                                                         
+                      00161 RETARDO_8mS:            RETARDO_2V              .6,.181                 ;RETARDO DE 8mS PARA LA PERSISTE
+                            NCIA DE LA VISION
+00B8   3006               M                 MOVLW           .6
+00B9   00E1               M                 MOVWF           0X61
+00BA   30B5               M                 MOVLW           .181
+00BB   00E2               M                 MOVWF           0X62
+00BC   20C5               M                 CALL            ST2V
+00BD   0008           00162                                         RETURN
+                      00163 ;---------------------------TABLAS------------------------------------
+                      00164 
+                      00165 ;---------------------------LIBRERIAS--------------------------------
+                      00166                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
+                            \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm>
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 11
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 ;                       MOVLW           .                       ;VAR2
+                      00002 ;                       MOVWF           0X61
+                      00003 ;                       MOVLW           .                       ;VAR1
+                      00004 ;                       MOVWF           0X62
+                      00005 ;                       CALL            ST2V
+                      00006 ;                       RETURN
+                      00007 ;;---------------------------------------------------------
+                      00008 ;                       MOVLW           .                       ;VAR1
+                      00009 ;                       MOVWF           0X64
+                      00010 ;                       MOVLW           .                       ;VAR2
+                      00011 ;                       MOVWF           0X65            
+                      00012 ;                       MOVLW           .                       ;VAR3
+                      00013 ;                       MOVWF           0X66
+                      00014 ;                       CALL            ST3V
+                      00015 
+                      00016 ;SUBT25MS:              SUBT3V          .3,.47,.25   ;RETARDO DE 25mS PARA EL USO DE LA FUNCION ANTIREBO
+                            TES     
+                      00017 
+                      00018 ;--------------------RUTINA DE TIEMPO 1 VAR---------------
+                      00019 
+00BE   0000           00020 ST1V:                   NOP
+00BF   0000           00021                         NOP
+00C0   0000           00022                         NOP 
+00C1   0000           00023                         NOP
+00C2   0BE0           00024                         DECFSZ          0X60,F
+00C3   28BE           00025                         GOTO            ST1V
+00C4   0008           00026                         RETURN
+                      00027 
+                      00028                         
+                      00029 ;SUBRUTINA DE TIEMPO DE 2 VARIABLES
+00C5   0862           00030 ST2V:                   MOVF            0X62,W
+00C6   00E3           00031                         MOVWF           0X63
+00C7   0000           00032 DECRE2V:                NOP
+00C8   0000           00033                         NOP
+00C9   0000           00034                         NOP
+00CA   0000           00035                         NOP
+00CB   0BE3           00036                         DECFSZ          0X63,F
+00CC   28C7           00037                         GOTO            DECRE2V
+00CD   0BE1           00038                         DECFSZ          0X61,F
+00CE   28C5           00039                         GOTO            ST2V
+00CF   0008           00040                         RETURN
+                      00041 
+                      00042                         
+                      00043 ;SUBRUTINA DE TIEMPO DE 3 VARIABLES
+00D0   0866           00044 ST3V:                   MOVF            0X66,W
+00D1   00E7           00045                         MOVWF           0X67
+00D2   0865           00046 RECARGA3V:              MOVF            0X65,W
+00D3   00E8           00047                         MOVWF           0X68
+00D4   0000           00048 DECRE3V:                NOP
+00D5   0000           00049                         NOP
+00D6   0000           00050                         NOP
+00D7   0000           00051                         NOP
+00D8   0BE8           00052                         DECFSZ          0X68,F
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 12
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+00D9   28D4           00053                         GOTO            DECRE3V
+00DA   0BE7           00054                         DECFSZ          0X67,F
+00DB   28D2           00055                         GOTO            RECARGA3V
+00DC   0BE4           00056                         DECFSZ          0X64,F
+00DD   28D0           00057                         GOTO            ST3V
+00DE   0008           00058                         RETURN
+                      00059 
+                      00167                                         END
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 13
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ABDEN                             00000000
+ABDOVF                            00000007
+ACKDT                             00000005
+ACKEN                             00000004
+ACKSTAT                           00000006
+ADCON0                            0000001F
+ADCON1                            0000009F
+ADCS0                             00000006
+ADCS1                             00000007
+ADDEN                             00000003
+ADFM                              00000007
+ADIE                              00000006
+ADIF                              00000006
+ADON                              00000000
+ADRESH                            0000001E
+ADRESL                            0000009E
+ANS0                              00000000
+ANS1                              00000001
+ANS10                             00000002
+ANS11                             00000003
+ANS12                             00000004
+ANS13                             00000005
+ANS2                              00000002
+ANS3                              00000003
+ANS4                              00000004
+ANS5                              00000005
+ANS6                              00000006
+ANS7                              00000007
+ANS8                              00000000
+ANS9                              00000001
+ANSEL                             00000188
+ANSELH                            00000189
+BAJA_FLAG                         00000095
+BAUDCTL                           00000187
+BCLIE                             00000003
+BCLIF                             00000003
+BF                                00000000
+BRG0                              00000000
+BRG1                              00000001
+BRG10                             00000002
+BRG11                             00000003
+BRG12                             00000004
+BRG13                             00000005
+BRG14                             00000006
+BRG15                             00000007
+BRG16                             00000003
+BRG2                              00000002
+BRG3                              00000003
+BRG4                              00000004
+BRG5                              00000005
+BRG6                              00000006
+BRG7                              00000007
+BRG8                              00000000
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 14
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+BRG9                              00000001
+BRGH                              00000002
+C                                 00000000
+C1CH0                             00000000
+C1CH1                             00000001
+C1IE                              00000005
+C1IF                              00000005
+C1OE                              00000005
+C1ON                              00000007
+C1OUT                             00000006
+C1POL                             00000004
+C1R                               00000002
+C1RSEL                            00000005
+C1SEN                             00000005
+C2CH0                             00000000
+C2CH1                             00000001
+C2IE                              00000006
+C2IF                              00000006
+C2OE                              00000005
+C2ON                              00000007
+C2OUT                             00000006
+C2POL                             00000004
+C2R                               00000002
+C2REN                             00000004
+C2RSEL                            00000004
+C2SYNC                            00000000
+CCP1CON                           00000017
+CCP1IE                            00000002
+CCP1IF                            00000002
+CCP1M0                            00000000
+CCP1M1                            00000001
+CCP1M2                            00000002
+CCP1M3                            00000003
+CCP1X                             00000005
+CCP1Y                             00000004
+CCP2CON                           0000001D
+CCP2IE                            00000000
+CCP2IF                            00000000
+CCP2M0                            00000000
+CCP2M1                            00000001
+CCP2M2                            00000002
+CCP2M3                            00000003
+CCP2X                             00000005
+CCP2Y                             00000004
+CCPR1                             00000015
+CCPR1H                            00000016
+CCPR1L                            00000015
+CCPR2                             0000001B
+CCPR2H                            0000001C
+CCPR2L                            0000001B
+CHS0                              00000002
+CHS1                              00000003
+CHS2                              00000004
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 15
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+CHS3                              00000005
+CKE                               00000006
+CKP                               00000004
+CM1CON0                           00000107
+CM2CON0                           00000108
+CM2CON1                           00000109
+CONFIGURACION                     
+CONT60                            00000022
+CREN                              00000004
+CSRC                              00000007
+D                                 00000005
+DATA_ADDRESS                      00000005
+DC                                00000001
+DC1B0                             00000004
+DC1B1                             00000005
+DC2B0                             00000004
+DC2B1                             00000005
+DECENA                            00000021
+DECENA_DIS                        BCF     PORTE,1
+DECENA_ENA                        BSF     PORTE,1
+DECRE2V                           000000C7
+DECRE3V                           000000D4
+D_A                               00000005
+D_NOT_A                           00000005
+ECCPAS                            0000009C
+ECCPAS0                           00000004
+ECCPAS1                           00000005
+ECCPAS2                           00000006
+ECCPASE                           00000007
+EEADR                             0000010D
+EEADRH                            0000010F
+EECON1                            0000018C
+EECON2                            0000018D
+EEDAT                             0000010C
+EEDATA                            0000010C
+EEDATH                            0000010E
+EEIE                              00000004
+EEIF                              00000004
+EEPGD                             00000007
+F                                 00000001
+FERR                              00000002
+FIN_INT                           0000009F
+FSR                               00000004
+FVREN                             00000000
+GCEN                              00000007
+GIE                               00000007
+GO                                00000001
+GO_DONE                           00000001
+GO_NOT_DONE                       00000001
+HTS                               00000002
+I2C_DATA                          00000005
+I2C_READ                          00000002
+I2C_START                         00000003
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 16
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+I2C_STOP                          00000004
+INDF                              00000000
+INICIALIZA                        0000002F
+INTCON                            0000000B
+INTE                              00000004
+INTEDG                            00000006
+INTF                              00000001
+INT_ON_CHANGE                     00000097
+IOCB                              00000096
+IOCB0                             00000000
+IOCB1                             00000001
+IOCB2                             00000002
+IOCB3                             00000003
+IOCB4                             00000004
+IOCB5                             00000005
+IOCB6                             00000006
+IOCB7                             00000007
+IRCF0                             00000004
+IRCF1                             00000005
+IRCF2                             00000006
+IRP                               00000007
+ISR                               00000088
+LIMPIA_DEC                        0000006B
+LIMPIA_UNI                        0000006C
+LTS                               00000001
+MC1OUT                            00000007
+MC2OUT                            00000006
+MSK                               00000093
+MSK0                              00000000
+MSK1                              00000001
+MSK2                              00000002
+MSK3                              00000003
+MSK4                              00000004
+MSK5                              00000005
+MSK6                              00000006
+MSK7                              00000007
+NOT_A                             00000005
+NOT_ADDRESS                       00000005
+NOT_BO                            00000000
+NOT_BOR                           00000000
+NOT_DONE                          00000001
+NOT_PD                            00000003
+NOT_POR                           00000001
+NOT_RBPU                          00000007
+NOT_RC8                           00000006
+NOT_T1SYNC                        00000002
+NOT_TO                            00000004
+NOT_TX8                           00000006
+NOT_W                             00000002
+NOT_WRITE                         00000002
+OERR                              00000001
+OPTION_REG                        00000081
+OSCCON                            0000008F
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 17
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+OSCTUNE                           00000090
+OSFIE                             00000007
+OSFIF                             00000007
+OSTS                              00000003
+P                                 00000004
+P1M0                              00000006
+P1M1                              00000007
+PCL                               00000002
+PCLATH                            0000000A
+PCON                              0000008E
+PDC0                              00000000
+PDC1                              00000001
+PDC2                              00000002
+PDC3                              00000003
+PDC4                              00000004
+PDC5                              00000005
+PDC6                              00000006
+PEIE                              00000006
+PEN                               00000002
+PIE1                              0000008C
+PIE2                              0000008D
+PIR1                              0000000C
+PIR2                              0000000D
+PORTA                             00000005
+PORTB                             00000006
+PORTC                             00000007
+PORTD                             00000008
+PORTE                             00000009
+PR2                               00000092
+PRSEN                             00000007
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+PSSAC0                            00000002
+PSSAC1                            00000003
+PSSBD0                            00000000
+PSSBD1                            00000001
+PSTRCON                           0000009D
+PULSR                             00000002
+PULSS                             00000003
+PWM1CON                           0000009B
+R                                 00000002
+RA0                               00000000
+RA1                               00000001
+RA2                               00000002
+RA3                               00000003
+RA4                               00000004
+RA5                               00000005
+RA6                               00000006
+RA7                               00000007
+RB0                               00000000
+RB1                               00000001
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 18
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RB6                               00000006
+RB7                               00000007
+RBIE                              00000003
+RBIF                              00000000
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RC6                               00000006
+RC7                               00000007
+RC8_9                             00000006
+RC9                               00000006
+RCD8                              00000000
+RCEN                              00000003
+RCIDL                             00000006
+RCIE                              00000005
+RCIF                              00000005
+RCREG                             0000001A
+RCSTA                             00000018
+RD                                00000000
+RD0                               00000000
+RD1                               00000001
+RD2                               00000002
+RD3                               00000003
+RD4                               00000004
+RD5                               00000005
+RD6                               00000006
+RD7                               00000007
+RE0                               00000000
+RE1                               00000001
+RE2                               00000002
+RE3                               00000003
+READ_WRITE                        00000002
+RECARGA3V                         000000D2
+RECARGA60                         0000006D
+RESTORE_REG                       
+RETARDO_1V                        
+RETARDO_2V                        
+RETARDO_3V                        
+RETARDO_8mS                       000000B8
+RP0                               00000005
+RP1                               00000006
+RSEN                              00000001
+RX9                               00000006
+RX9D                              00000000
+RX_ERROR                          00000091
+R_NOT_W                           00000002
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 19
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+R_W                               00000002
+S                                 00000003
+SAVE_PC                           00000072
+SAVE_REG                          
+SAVE_STATUS                       00000071
+SAVE_W                            00000070
+SBOREN                            00000004
+SCKP                              00000004
+SCS                               00000000
+SEN                               00000000
+SENDB                             00000003
+SIETE_SEG                         0000001F
+SIETE_SG_KC                       
+SMP                               00000007
+SPBRG                             00000099
+SPBRGH                            0000009A
+SPEN                              00000007
+SR0                               00000006
+SR1                               00000007
+SRCON                             00000185
+SREN                              00000005
+SSPADD                            00000093
+SSPBUF                            00000013
+SSPCON                            00000014
+SSPCON2                           00000091
+SSPEN                             00000005
+SSPIE                             00000003
+SSPIF                             00000003
+SSPM0                             00000000
+SSPM1                             00000001
+SSPM2                             00000002
+SSPM3                             00000003
+SSPMSK                            00000093
+SSPOV                             00000006
+SSPSTAT                           00000094
+ST1V                              000000BE
+ST2V                              000000C5
+ST3V                              000000D0
+STATUS                            00000003
+STRA                              00000000
+STRB                              00000001
+STRC                              00000002
+STRD                              00000003
+STRSYNC                           00000004
+SWDTEN                            00000000
+SYNC                              00000004
+T0CS                              00000005
+T0IE                              00000005
+T0IF                              00000002
+T0SE                              00000004
+T1CKPS0                           00000004
+T1CKPS1                           00000005
+T1CON                             00000010
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 20
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+T1GINV                            00000007
+T1GIV                             00000007
+T1GSS                             00000001
+T1INSYNC                          00000002
+T1OSCEN                           00000003
+T1SYNC                            00000002
+T2CKPS0                           00000000
+T2CKPS1                           00000001
+T2CON                             00000012
+TMR0                              00000001
+TMR0IE                            00000005
+TMR0IF                            00000002
+TMR1                              0000000E
+TMR1CS                            00000001
+TMR1GE                            00000006
+TMR1H                             0000000F
+TMR1IE                            00000000
+TMR1IF                            00000000
+TMR1L                             0000000E
+TMR1ON                            00000000
+TMR2                              00000011
+TMR2IE                            00000001
+TMR2IF                            00000001
+TMR2ON                            00000002
+TOUTPS0                           00000003
+TOUTPS1                           00000004
+TOUTPS2                           00000005
+TOUTPS3                           00000006
+TRISA                             00000085
+TRISA0                            00000000
+TRISA1                            00000001
+TRISA2                            00000002
+TRISA3                            00000003
+TRISA4                            00000004
+TRISA5                            00000005
+TRISA6                            00000006
+TRISA7                            00000007
+TRISB                             00000086
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISB6                            00000006
+TRISB7                            00000007
+TRISC                             00000087
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 21
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+TRISC6                            00000006
+TRISC7                            00000007
+TRISD                             00000088
+TRISD0                            00000000
+TRISD1                            00000001
+TRISD2                            00000002
+TRISD3                            00000003
+TRISD4                            00000004
+TRISD5                            00000005
+TRISD6                            00000006
+TRISD7                            00000007
+TRISE                             00000089
+TRISE0                            00000000
+TRISE1                            00000001
+TRISE2                            00000002
+TRISE3                            00000003
+TRMT                              00000001
+TUN0                              00000000
+TUN1                              00000001
+TUN2                              00000002
+TUN3                              00000003
+TUN4                              00000004
+TX8_9                             00000006
+TX9                               00000006
+TX9D                              00000000
+TXD8                              00000000
+TXEN                              00000005
+TXIE                              00000004
+TXIF                              00000004
+TXREG                             00000019
+TXSTA                             00000098
+UA                                00000001
+ULPWUE                            00000005
+ULPWUIE                           00000002
+ULPWUIF                           00000002
+UNIDAD                            00000020
+UNIDAD_DIS                        BCF     PORTE,0
+UNIDAD_ENA                        BSF     PORTE,0
+VCFG0                             00000004
+VCFG1                             00000005
+VECTOR_INTERRUPCION               
+VISUALIZAR                        0000006F
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             00000097
+VREN                              00000007
+VROE                              00000006
+VRR                               00000005
+VRSS                              00000004
+W                                 00000000
+WCOL                              00000007
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 22
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+WDTCON                            00000105
+WDTPS0                            00000001
+WDTPS1                            00000002
+WDTPS2                            00000003
+WDTPS3                            00000004
+WPUB                              00000095
+WPUB0                             00000000
+WPUB1                             00000001
+WPUB2                             00000002
+WPUB3                             00000003
+WPUB4                             00000004
+WPUB5                             00000005
+WPUB6                             00000006
+WPUB7                             00000007
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+WUE                               00000001
+Z                                 00000002
+_BOR21V                           00003EFF
+_BOR40V                           00003FFF
+_BOR4V_BOR21V                     00003EFF
+_BOR4V_BOR40V                     00003FFF
+_BOREN_NSLEEP                     00003EFF
+_BOREN_OFF                        00003CFF
+_BOREN_ON                         00003FFF
+_BOREN_SBODEN                     00003DFF
+_BOR_NSLEEP                       00003EFF
+_BOR_OFF                          00003CFF
+_BOR_ON                           00003FFF
+_BOR_SBODEN                       00003DFF
+_CONFIG1                          00002007
+_CONFIG2                          00002008
+_CPD_OFF                          00003FFF
+_CPD_ON                           00003F7F
+_CP_OFF                           00003FFF
+_CP_ON                            00003FBF
+_DEBUG_OFF                        00003FFF
+_DEBUG_ON                         00001FFF
+_DEVID1                           00002006
+_EC_OSC                           00003FFB
+_EXTRC                            00003FFF
+_EXTRCIO                          00003FFE
+_EXTRC_OSC_CLKOUT                 00003FFF
+_EXTRC_OSC_NOCLKOUT               00003FFE
+_FCMEN_OFF                        000037FF
+_FCMEN_ON                         00003FFF
+_FOSC_EC                          00003FFB
+_FOSC_EXTRC_CLKOUT                00003FFF
+_FOSC_EXTRC_NOCLKOUT              00003FFE
+_FOSC_HS                          00003FFA
+_FOSC_INTRC_CLKOUT                00003FFD
+_FOSC_INTRC_NOCLKOUT              00003FFC
+MPASM  5.51                         USART.ASM   2-18-2022  21:37:52         PAGE 23
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+_FOSC_LP                          00003FF8
+_FOSC_XT                          00003FF9
+_HS_OSC                           00003FFA
+_IDLOC0                           00002000
+_IDLOC1                           00002001
+_IDLOC2                           00002002
+_IDLOC3                           00002003
+_IESO_OFF                         00003BFF
+_IESO_ON                          00003FFF
+_INTOSC                           00003FFD
+_INTOSCIO                         00003FFC
+_INTRC_OSC_CLKOUT                 00003FFD
+_INTRC_OSC_NOCLKOUT               00003FFC
+_LP_OSC                           00003FF8
+_LVP_OFF                          00002FFF
+_LVP_ON                           00003FFF
+_MCLRE_OFF                        00003FDF
+_MCLRE_ON                         00003FFF
+_PWRTE_OFF                        00003FFF
+_PWRTE_ON                         00003FEF
+_WDTE_OFF                         00003FF7
+_WDTE_ON                          00003FFF
+_WDT_OFF                          00003FF7
+_WDT_ON                           00003FFF
+_WRT_1FOURTH                      00003BFF
+_WRT_256                          00003DFF
+_WRT_HALF                         000039FF
+_WRT_OFF                          00003FFF
+_XT_OSC                           00003FF9
+__16F887                          00000001
+__DEBUG                           1
+
+
+MEMORY USAGE MAP ('X' = Used,  '-' = Unused)
+
+0000 : X---XXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0040 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+0080 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXXX
+00C0 : XXXXXXXXXXXXXXXX XXXXXXXXXXXXXXX- ---------------- ----------------
+2000 : -------XX------- ---------------- ---------------- ----------------
+
+All other memory blocks unused.
+
+Program Memory Words Used:   220
+Program Memory Words Free:  7972
+
+
+Errors   :     0
+Warnings :     2 reported,     0 suppressed
+Messages :    26 reported,     0 suppressed
+
+
