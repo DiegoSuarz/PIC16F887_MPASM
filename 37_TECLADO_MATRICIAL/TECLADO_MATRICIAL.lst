@@ -1,4 +1,4 @@
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE  1
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE  1
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -57,7 +57,7 @@ Warning[205]: Found directive in column 1. (ENDC)
                       00014                         MOVF            0X60,W
                       00015                         MOVWF           0X75
                       00016                         MOVF            0X61,W
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE  2
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE  2
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -116,7 +116,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00004 ;#DEFINE                RS_0    BCF             PUERTO,4
                       00005 ;#DEFINE                RS_1    BSF             PUERTO,4
                       00006 ;#DEFINE                E_0             BCF             PUERTO,5
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE  3
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE  3
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
@@ -143,23 +143,24 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00023 
                       00035                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
                             \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\MACROS_7SEG.ASM>   ;MACRO PARA EL USO DISPLAY 7 SEG        
-                      00001 #DEFINE UNIDAD_ENA      BSF     PORTA,0
-                      00002 #DEFINE UNIDAD_DIS      BCF     PORTA,0
-                      00003 #DEFINE DECENA_ENA      BSF     PORTA,1
-                      00004 #DEFINE DECENA_DIS      BCF     PORTA,1
-                      00005 
-  00000020            00006 UNIDAD          EQU     0X20
-  00000021            00007 DECENA          EQU 0X21        
-  00000022            00008 CONT60          EQU     0X22
-                      00009 
+                      00001 
+                      00002 #DEFINE UNIDAD_ENA      BSF     PORTE,0
+                      00003 #DEFINE UNIDAD_DIS      BCF     PORTE,0
+                      00004 #DEFINE DECENA_ENA      BSF     PORTE,1
+                      00005 #DEFINE DECENA_DIS      BCF     PORTE,1
+                      00006 
+  00000020            00007 UNIDAD          EQU     0X20
+  00000021            00008 DECENA          EQU 0X21        
+  00000022            00009 CONT60          EQU     0X22
                       00010 
-                      00011 SIETE_SG_KC     MACRO
-                      00012 SIETE_SEG:                                              
-                      00013                         ADDWF           PCL,F
-                      00014 
-                      00015                         DT                      0X3F,0X06,0X5B,0X4F,0X66,0X7D,0X07,0X7F,0X6F,0X77,0X7C,0
+                      00011 
+                      00012 SIETE_SG_KC     MACRO
+                      00013 SIETE_SEG:                                              
+                      00014                         ADDWF           PCL,F
+                      00015 
+                      00016                         DT                      0X3F,0X06,0X5B,0X4F,0X66,0X7D,0X07,0X7F,0X6F,0X77,0X7C,0
                             X39,0X5E,0X79,0X71
-                      00016                         ENDM
+                      00017                         ENDM
                       00036                                         INCLUDE         <D:\Archivos\Programacion\Microcontroladores\PIC
                             \ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\RETARDOS_MACROS.ASM> ;MACRO DE RETARDO
                       00001 ;---------RETARDO 1 VARIABLE-----------------
@@ -174,13 +175,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00010 RETARDO_2V      MACRO           VAR1,VAR2
                       00011                 MOVLW           VAR1
                       00012                 MOVWF           0X61
-                      00013                 MOVLW           VAR2
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE  4
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE  4
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+                      00013                 MOVLW           VAR2
                       00014                 MOVWF           0X62
                       00015                 CALL            ST2V
                       00016                 ENDM
@@ -214,7 +215,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00011 
                       00012 CONFIGURACION           MACRO
                       00013                 
-                      00014 INICIALIZA:                     BSF                     STATUS,RP0
+                      00014 INICIALIZA:             BSF                     STATUS,RP0
                       00015                                         BSF                     STATUS,RP1              ;ACCEDIENDO AL B
                             ANCO 3
                       00016                                         CLRF            ANSEL
@@ -233,13 +234,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00027 
                       00028                                         BCF                     STATUS,RP0              
                       00029                                         BCF                     STATUS,RP1              ;ACCEDIENDO AL B
-                            ANCO 0
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE  5
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE  5
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+                            ANCO 0
                       00030                                         CLRF            PORTA                   ;LIMPIAR EL PUERTO A
                       00031                                         CLRF            PORTB                   ;LIMPIAR EL PUERTO B
                       00032                                         CLRF            PORTC                   ;LIMPIAR EL PUERTO C
@@ -292,13 +293,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0014   0864               M                         MOVF            0X64,W
 0015   00F9               M                         MOVWF           0X79
 0016   0865               M                         MOVF            0X65,W
-0017   00FA               M                         MOVWF           0X7A
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE  6
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE  6
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+0017   00FA               M                         MOVWF           0X7A
 0018   0866               M                         MOVF            0X66,W
 0019   00FB               M                         MOVWF           0X7B
 001A   0867               M                         MOVF            0X67,W
@@ -342,7 +343,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
        3420 
                       00051                                         CONFIGURACION                           ;NOS DEJA EN EL BANCO 1
                           M                 
-0052   1683               M INICIALIZA:                     BSF                     STATUS,RP0
+0052   1683               M INICIALIZA:             BSF                     STATUS,RP0
 0053   1703               M                                         BSF                     STATUS,RP1              ;ACCEDIENDO AL B
                             ANCO 3
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
@@ -351,13 +352,13 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 0055   0189               M                                         CLRF            ANSELH                  ;TODOS LOS PINES DIGITAL
                             ES
                           M                         
-0056   1303               M                                         BCF                     STATUS,RP1
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE  7
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE  7
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+0056   1303               M                                         BCF                     STATUS,RP1
 0057   1683               M                                         BSF                     STATUS,RP0              ;ACCEDIENDO AL B
                             ANCO 1
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
@@ -410,13 +411,13 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
                       00067                                         FILA1_POSICION  .0                                      ;POSICIO
                             N DE LA FILA 1
 006E   3000               M                                         MOVLW                   .0                                      
-                                    ;POSICIONARSE EN LA SEGUNDA FILA
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE  8
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE  8
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+                                    ;POSICIONARSE EN LA SEGUNDA FILA
 006F   2194               M                                         CALL                    DIRECCION_DDRAM
 0070   21C2           00068                                         CALL                    MENSAJE_FILA1           ;MENSAJE FILA 1
                       00069                                         FILA2_POSICION  .0                                      ;POSICIO
@@ -469,13 +470,13 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
                       00098 
                       00099                         
 0086   303C           00100 RECARGA60:                      MOVLW                   .60
-0087   00A2           00101                                         MOVWF                   CONT60                          ;CARGARM
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE  9
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE  9
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+0087   00A2           00101                                         MOVWF                   CONT60                          ;CARGARM
                             OS LA VARIABLE CONT60 CON .60
                       00102 
 0088   0820           00103 VISUALIZAR:                     MOVF                    UNIDAD,W                        ;LEEMOS LA VARIA
@@ -485,10 +486,10 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 008A   0088           00105                                         MOVWF                   PORTD                           ;VISUALI
                             ZAMOS LA UNIDAD POR EL PUERTO D
                       00106 
-008B   1405           00107                                         UNIDAD_ENA                                                      
+008B   1409           00107                                         UNIDAD_ENA                                                      
                             ;ENCENDER UNIDADES DISPLAY(ENCENDER TRANSITOR RA0)
 008C   2121           00108                                         CALL                    RETARDO_8mS
-008D   1005           00109                                         UNIDAD_DIS                                                      
+008D   1009           00109                                         UNIDAD_DIS                                                      
                             ;ENCENDER UNIDADES DISPLAY(APAGAR TRANSITOR RA0)
                       00110 
 008E   0821           00111                                         MOVF                    DECENA,W                        ;LEEMOS 
@@ -498,10 +499,10 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0090   0088           00113                                         MOVWF                   PORTD                           ;VISUALI
                             ZAMOS LA DECENA POR EL PUERTO D
                       00114 
-0091   1485           00115                                         DECENA_ENA                                                      
+0091   1489           00115                                         DECENA_ENA                                                      
                             ;ENCENDER DECENAS DISPLAY(ENCENDER TRANSITOR RA1)
 0092   2121           00116                                         CALL                    RETARDO_8mS
-0093   1085           00117                                         DECENA_DIS                                                      
+0093   1089           00117                                         DECENA_DIS                                                      
                             ;APAGAR DECENAS DISPLAY(APAGAR TRANSITOR RA1)
                       00118                         
 0094   0BA2           00119                                         DECFSZ                  CONT60,F                        ;BUCLE P
@@ -528,13 +529,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                             Y LIMPIA UNIDADES Y DECENAS
                       00133                                         
                       00134 ;*************************************************************************
-                      00135                                         
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 10
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 10
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+                      00135                                         
                       00136 ;------------------SERVICIO DE RUTINA DE INTERRUPCION-----------------
 00A1                  00137 ISR:                            
 00A1   1D0B           00138                                         BTFSS                   INTCON,T0IF
@@ -587,13 +588,13 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 00BA   1381           00175                                         BCF                             OPTION_REG,7            ;DESACTI
                             VAR PULL UP PUERTO B
-00BB   1283           00176                                         BCF                             STATUS,RP0                      
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 11
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 11
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+00BB   1283           00176                                         BCF                             STATUS,RP0                      
                             ;B0
 00BC   0186           00177                                         CLRF                    PORTB
                       00178 
@@ -633,7 +634,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 00D2   2196           00207                                         CALL                    IMPRIME_CARACTER
                       00208                                 
                       00209 
-00D3   300F           00210                                         MOVLW                   0XF
+00D3   30F0           00210                                         MOVLW                   0XF0
 00D4   0606           00211                                         XORWF                   PORTB,W
 00D5   1D03           00212                                         BTFSS                   STATUS,Z
 00D6   28D3           00213                                         GOTO                    $-3
@@ -646,13 +647,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00219                                         
 00D7   2119           00220                                         CALL                    SUBT25MS
 00D8   1683           00221                                         BSF                             STATUS,RP0                      
-                            ;B1
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 12
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 12
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+                            ;B1
 00D9   30F0           00222                                         MOVLW                   0XF0
 Message[302]: Register in operand not in bank 0.  Ensure that bank bits are correct.
 00DA   0086           00223                                         MOVWF                   TRISB
@@ -705,13 +706,13 @@ Message[302]: Register in operand not in bank 0.  Ensure that bank bits are corr
 00FE   2901           00242                                         GOTO                    SUMA100
 00FF   0AA7           00243                                         INCF                    CENTENAS,F
 0100   28FB           00244                                         GOTO                    RESTA100
-0101   3064           00245 SUMA100:                        MOVLW                   .100
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 13
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 13
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+0101   3064           00245 SUMA100:                        MOVLW                   .100
 0102   07B0           00246                                         ADDWF                   NUMERO,F
                       00247 
                       00248 ;******************EXTRAER DECENAS*********************************
@@ -764,13 +765,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                             NCIA DE LA VISION
 0121   3006               M                 MOVLW           .6
 0122   00E1               M                 MOVWF           0X61
-0123   30B5               M                 MOVLW           .181
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 14
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 14
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+0123   30B5               M                 MOVLW           .181
 0124   00E2               M                 MOVWF           0X62
 0125   2151               M                 CALL            ST2V
 0126   0008           00283                                         RETURN
@@ -823,13 +824,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0150   0008           00026                         RETURN
                       00027 
                       00028                         
-                      00029 ;SUBRUTINA DE TIEMPO DE 2 VARIABLES
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 15
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 15
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+                      00029 ;SUBRUTINA DE TIEMPO DE 2 VARIABLES
 0151   0862           00030 ST2V:                   MOVF            0X62,W
 0152   00E3           00031                         MOVWF           0X63
 0153   0000           00032 DECRE2V:                NOP
@@ -882,13 +883,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0171   21AC           00013                                         CALL                    MINISALUDO
 0172   21AC           00014                                         CALL                    MINISALUDO
 0173   3002           00015                                         MOVLW                   B'00000010'
-0174   0087           00016                                         MOVWF                   PUERTO
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 16
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 16
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+0174   0087           00016                                         MOVWF                   PUERTO
 0175   21B5           00017                                         CALL                    ACTIVA_E
 0176   217C           00018                                         CALL                    FUNCTION_SET
 0177   217E           00019                                         CALL                    LCD_OFF
@@ -941,13 +942,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 0196   00AA           00064 IMPRIME_CARACTER:       MOVWF                   DATO
 0197   0E2A           00065                                         SWAPF                   DATO,W
 0198   390F           00066                                         ANDLW                   B'00001111'
-0199   0087           00067                                         MOVWF                   PUERTO
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 17
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 17
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+0199   0087           00067                                         MOVWF                   PUERTO
 019A   1607           00068                                         RS_1
 019B   21B5           00069                                         CALL                    ACTIVA_E                        ;ENVIAR 
                             LOS 4BITS MSB
@@ -1000,13 +1001,13 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
 01C1   0008           00103                                         RETURN
                       00104 
                       00105 
-                      00106 
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 18
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 18
 
 
 LOC  OBJECT CODE     LINE SOURCE TEXT
   VALUE
 
+                      00106 
                       00107 ;-------------------SUBRUTINA PARA ESCRIBIR MENSAJES----------------------------------------------------
                             --------------------------------
                       00108 
@@ -1037,7 +1038,7 @@ LOC  OBJECT CODE     LINE SOURCE TEXT
                       00133 
                       00134 
                       00293                                         END
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 19
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 19
 
 
 SYMBOL TABLE
@@ -1096,7 +1097,7 @@ BRG3                              00000003
 BRG4                              00000004
 BRG5                              00000005
 BRG6                              00000006
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 20
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 20
 
 
 SYMBOL TABLE
@@ -1155,7 +1156,7 @@ CCPR1L                            00000015
 CCPR2                             0000001B
 CCPR2H                            0000001C
 CCPR2L                            0000001B
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 21
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 21
 
 
 SYMBOL TABLE
@@ -1189,8 +1190,8 @@ DC2B0                             00000004
 DC2B1                             00000005
 DECENA                            00000021
 DECENAS                           00000026
-DECENA_DIS                        BCF     PORTA,1
-DECENA_ENA                        BSF     PORTA,1
+DECENA_DIS                        BCF     PORTE,1
+DECENA_ENA                        BSF     PORTE,1
 DECIMAL                           00000029
 DECRE2V                           00000153
 DECRE3V                           00000160
@@ -1214,7 +1215,7 @@ EEIF                              00000004
 EEPGD                             00000007
 ENTRY_MODE                        00000182
 ESCRIBE_DATO                      000001A2
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 22
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 22
 
 
 SYMBOL TABLE
@@ -1273,7 +1274,7 @@ LCD_FILA2                         00000041
 LCD_OFF                           0000017E
 LCD_ON                            00000184
 LCD_ON_CURSOR                     00000186
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 23
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 23
 
 
 SYMBOL TABLE
@@ -1332,7 +1333,7 @@ PDC2                              00000002
 PDC3                              00000003
 PDC4                              00000004
 PDC5                              00000005
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 24
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 24
 
 
 SYMBOL TABLE
@@ -1391,7 +1392,7 @@ RC3                               00000003
 RC4                               00000004
 RC5                               00000005
 RC6                               00000006
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 25
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 25
 
 
 SYMBOL TABLE
@@ -1450,7 +1451,7 @@ SAVE_STATUS                       00000071
 SAVE_W                            00000070
 SBOREN                            00000004
 SCKP                              00000004
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 26
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 26
 
 
 SYMBOL TABLE
@@ -1509,7 +1510,7 @@ T1GIV                             00000007
 T1GSS                             00000001
 T1INSYNC                          00000002
 T1OSCEN                           00000003
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 27
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 27
 
 
 SYMBOL TABLE
@@ -1568,7 +1569,7 @@ TRISC1                            00000001
 TRISC2                            00000002
 TRISC3                            00000003
 TRISC4                            00000004
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 28
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 28
 
 
 SYMBOL TABLE
@@ -1612,8 +1613,8 @@ ULPWUIE                           00000002
 ULPWUIF                           00000002
 UNIDAD                            00000020
 UNIDADES                          00000025
-UNIDAD_DIS                        BCF     PORTA,0
-UNIDAD_ENA                        BSF     PORTA,0
+UNIDAD_DIS                        BCF     PORTE,0
+UNIDAD_ENA                        BSF     PORTE,0
 VCFG0                             00000004
 VCFG1                             00000005
 VECTOR_INTERRUPCION               
@@ -1627,7 +1628,7 @@ VREN                              00000007
 VROE                              00000006
 VRR                               00000005
 VRSS                              00000004
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 29
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 29
 
 
 SYMBOL TABLE
@@ -1686,7 +1687,7 @@ _FOSC_EC                          00003FFB
 _FOSC_EXTRC_CLKOUT                00003FFF
 _FOSC_EXTRC_NOCLKOUT              00003FFE
 _FOSC_HS                          00003FFA
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 30
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 30
 
 
 SYMBOL TABLE
@@ -1744,7 +1745,7 @@ All other memory blocks unused.
 Program Memory Words Used:   467
 Program Memory Words Free:  7725
 
-MPASM  5.51             TECLADO_MATRICIAL.ASM   2-13-2022  18:14:36         PAGE 31
+MPASM  5.51             TECLADO_MATRICIAL.ASM   2-19-2022  16:27:46         PAGE 31
 
 
 

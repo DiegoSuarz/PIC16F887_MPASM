@@ -1,0 +1,73 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Sat Feb 19 19:50:32 2022
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000002
+                   .org_2       code   0x000004    program   0x0001d6
+.config_2007_USART_STRING.O       code   0x002007    program   0x000002
+.config_2008_USART_STRING.O       code   0x002008    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x000000      
+                            0x000004    0x0000ee      
+                            0x002007    0x002008      
+            238 out of 8455 program addresses used, program memory utilization is 2%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                BAJA_FLAG   0x000095    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                  DECRE2V   0x0000d7    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                  DECRE3V   0x0000e4    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                  FIN_INT   0x0000a9    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+               INICIALIZA   0x00002f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+            INT_ON_CHANGE   0x000097    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                      ISR   0x000088    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+               LIMPIA_DEC   0x00006b    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+               LIMPIA_UNI   0x00006c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                RECARGA3V   0x0000e2    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                RECARGA60   0x00006d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+              RETARDO_8mS   0x0000c8    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                 RX_ERROR   0x000091    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                SIETE_SEG   0x00001f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                     ST1V   0x0000ce    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST2V   0x0000d5    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST3V   0x0000e0    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+        TX_CARACTER_USART   0x0000c2    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+               VISUALIZAR   0x00006f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                SIETE_SEG   0x00001f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+               INICIALIZA   0x00002f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+               LIMPIA_DEC   0x00006b    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+               LIMPIA_UNI   0x00006c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                RECARGA60   0x00006d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+               VISUALIZAR   0x00006f    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                      ISR   0x000088    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                 RX_ERROR   0x000091    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                BAJA_FLAG   0x000095    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+            INT_ON_CHANGE   0x000097    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                  FIN_INT   0x0000a9    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+        TX_CARACTER_USART   0x0000c2    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+              RETARDO_8mS   0x0000c8    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\42_USART_STRING\USART_STRING.asm
+                     ST1V   0x0000ce    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST2V   0x0000d5    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                  DECRE2V   0x0000d7    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST3V   0x0000e0    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                RECARGA3V   0x0000e2    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                  DECRE3V   0x0000e4    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+
+
