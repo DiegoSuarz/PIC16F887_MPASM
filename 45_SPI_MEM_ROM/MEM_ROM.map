@@ -1,0 +1,61 @@
+MPLINK 4.49, Linker
+Linker Map File - Created Thu Mar 03 17:54:52 2022
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                   .org_0       code   0x000000    program   0x000000
+                   .org_1       code   0x000000    program   0x000116
+   .config_2007_MEM_ROM.O       code   0x002007    program   0x000002
+   .config_2008_MEM_ROM.O       code   0x002008    program   0x000002
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00008a      
+                            0x002007    0x002008      
+            141 out of 8455 program addresses used, program memory utilization is 1%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                  DECRE2V   0x000073    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                  DECRE3V   0x000080    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+          ENVIAR_DATO_SPI   0x000055    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+        ESCRIBIR_32_BYTES   0x00003d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+               INICIALIZA   0x000001    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+            LEER_32_BYTES   0x00004d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+            LEER_DATO_SPI   0x00005b    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+                     LOOP   0x000044    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+                RECARGA3V   0x00007e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+               RETARDO_1S   0x000063    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+              RETARDO_5MS   0x00005d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+                     ST1V   0x00006a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST2V   0x000071    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST3V   0x00007c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+               INICIALIZA   0x000001    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+        ESCRIBIR_32_BYTES   0x00003d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+                     LOOP   0x000044    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+            LEER_32_BYTES   0x00004d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+          ENVIAR_DATO_SPI   0x000055    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+            LEER_DATO_SPI   0x00005b    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+              RETARDO_5MS   0x00005d    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+               RETARDO_1S   0x000063    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\45_SPI_MEM_ROM\MEM_ROM.asm
+                     ST1V   0x00006a    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST2V   0x000071    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                  DECRE2V   0x000073    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                     ST3V   0x00007c    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                RECARGA3V   0x00007e    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+                  DECRE3V   0x000080    program     static D:\Archivos\Programacion\Microcontroladores\PIC\ASSEMBLER\MPASM\PIC16F887\LIBRERIAS\LIBRERIA_RETARDOS.asm
+
+
